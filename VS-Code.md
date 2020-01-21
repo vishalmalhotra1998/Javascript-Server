@@ -9,6 +9,8 @@
 IntelliSense is code auto-complete meets artificial intelligence. This utility provides a list of suggestions along with a short hint or description as we are writing codes. These is derived from several contextual factors such as the programming language, the syntax, the variables, the functions as well as all the codes within the file.
 
 IntelliSense supports a number of programming language out-of-the-box, including Sass, LESS, JavaScript, TypeScript, and PHP. Some extensions to include IntelliSense for other programming languages are also available. It is a great feature to improve productivity.
+
+
 I
 **2. Peek**
 
