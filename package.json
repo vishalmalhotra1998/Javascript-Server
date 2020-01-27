@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "execute": "node ./extra/patterns/Diamondpattern.js",
-    "execute1":"node ./extra/patterns/EquilateralTriangle.js"
+    "diamond": "node ./extra/patterns/diamondPattern.js",
+    "equilateral":"node ./extra/patterns/equilateralTriangle.js"
   },
   "repository": {
     "type": "git",
