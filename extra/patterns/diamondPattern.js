@@ -1,7 +1,7 @@
 
 // Function  for implementing diamond triangle
 const diamond = (row) => {
-  let row_Index = 0;
+  let rowIndex = 0;
   let space = "";
   let star = "";
   let spaceCount = 0;
