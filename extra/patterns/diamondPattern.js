@@ -9,7 +9,7 @@ const diamond = (row) => {
 
   // Logic for upper triangle 
 
-  for (rowIndex = 0; row_Index < row; rowIndex++) {
+  for (rowIndex = 0; rowIndex < row; rowIndex++) {
 
     for (let k = row - 1; k > rowIndex; k--) {
       space = space + " ";
