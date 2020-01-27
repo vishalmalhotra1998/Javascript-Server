@@ -19,14 +19,14 @@ const invalid_Email = [];
 
 
 //checking wheather Email is valid or not.
-function validEmail(email) {
+const validEmail = (email) => {
     const regex = /([a-zA-Z0-9\+_.])+@successive.tech/g;
 
     return regex.test(email);
 }
 
 //Printing of vaild and invalid email user with thier counts.
-function printUser(validEmails, invalidEmails, validCount, invalidCount) {
+const printUser = (validEmails, invalidEmails, validCount, invalidCount) => {
     console.log("=> No. of Valid Users : " + validCount);
     validEmails.forEach(element => {
         console.log("- " + element);
@@ -40,7 +40,7 @@ function printUser(validEmails, invalidEmails, validCount, invalidCount) {
 
 // check for valid users
 
-function validUser(users) {
+const validUser = (users) => {
     users.forEach(element => {
 
         // Destructuring the object 
