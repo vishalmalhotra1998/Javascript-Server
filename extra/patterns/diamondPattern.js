@@ -4,18 +4,18 @@ const diamond = (row) => {
   let row_Index = 0;
   let space = "";
   let star = "";
-  let space_Count = 0;
+  let spaceCount = 0;
 
 
   // Logic for upper triangle 
 
-  for (row_Index = 0; row_Index < row; row_Index++) {
+  for (rowIndex = 0; row_Index < row; rowIndex++) {
 
-    for (let k = row - 1; k > row_Index; k--) {
+    for (let k = row - 1; k > rowIndex; k--) {
       space = space + " ";
     }
 
-    for (let j = 0; j < row_Index * 2 + 1; j++) {
+    for (let j = 0; j < rowIndex * 2 + 1; j++) {
       star = star + "*";
     }
     console.log(space + star);
@@ -25,18 +25,18 @@ const diamond = (row) => {
   }
 
   // Logic for lower triangle
-  for (let i = row_Index; i < row * 2; i++) {
+  for (let i = rowIndex; i < row * 2; i++) {
 
-    for (let j = 0; j < space_Count; j++) {
+    for (let j = 0; j < spaceCount; j++) {
       space = space + " ";
     }
 
-    for (let k = 0; k < (row - space_Count) * 2 - 1; k++) {
+    for (let k = 0; k < (row - spaceCount) * 2 - 1; k++) {
       star = star + "*";
 
     }
 
-    space_Count++;
+    spaceCount++;
     console.log(space + star);
     space = "";
     star = "";
