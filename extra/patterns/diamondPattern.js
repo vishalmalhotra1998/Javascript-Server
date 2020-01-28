@@ -33,7 +33,7 @@ const diamond = (row) => {
 
     for (let k = 0; k < (row - space_Count) * 2 - 1; k++) {
       star = star + "*";
-
+      
     }
 
     space_Count++;
