@@ -11,4 +11,5 @@ const hasPermission = (moduleName, role, permissionsType) => {
     });
     return flag;
 }
+//Export hasPermission function
 export default hasPermission;

@@ -39,7 +39,7 @@ const validUser = (users) => {
     //calling for printUser function
     printUser(validEmailStore, invalidEmailStore, countForValid, countForInvalid);
 }
-// calling for valid user
+// Export for valid user
 export default validUser;
 
 
