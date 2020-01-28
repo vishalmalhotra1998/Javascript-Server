@@ -7,7 +7,7 @@ const user = [
     },
     {
         traineeEmail: "ravi.chauhan@successive.tech",
-        reviewerEmail: "vinay.chuadhary@successive.tech",
+        reviewerEmail: "vinay.chaudhary@successive.tech",
 
     }
 ]
@@ -20,5 +20,5 @@ const permissions = {
     },
 
 }
-
-export {user,permissions}
+//Export the constants user and permission
+export {user,permissions};

@@ -1,7 +1,2 @@
-
-
-export {default as validUser} from './validation';
-
-
-
-export {default as hasPermission} from './permissions'
+export { default as validUser } from './validation';
+export { default as hasPermission } from './permissions';
