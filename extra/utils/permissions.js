@@ -1,4 +1,4 @@
-permissions = {
+const permissions = {
     'getUsers': {
         all: ['head-trainer'],
         read: ['trainee', 'trainer'],
@@ -8,12 +8,12 @@ permissions = {
 
 }
 
-
+// Function returns true or false after checking the parameters,modulName,role and permission type
 const hasPermission = (moduleName, role, permissionsType) => {
 
 
     const a = permissions[moduleName][permissionsType];
-    console.log("permission ",moduleName,role,permissionsType);
+    console.log("permission ", moduleName, role, permissionsType);
     let flag = false;
 
     console.log()
@@ -27,4 +27,5 @@ const hasPermission = (moduleName, role, permissionsType) => {
 
     return flag
 }
+// Prints the return value by function
 console.log(hasPermission('getUsers', 'trainee', 'write'));

@@ -14,8 +14,8 @@ const user = [
 
 let countForValid = 0;
 let countForInvalid = 0;
-const valid_Email = [];
-const invalid_Email = [];
+const validEmailStore = [];
+const invalidEmailStore = [];
 
 
 //checking wheather Email is valid or not.
@@ -46,21 +46,21 @@ const validUser = (users) => {
         // Destructuring the object 
         const { traineeEmail: trainee, reviewerEmail: reviewer } = element;
         if (validEmail(trainee)) {
-            valid_Email.push(trainee);
+            validEmailStore.push(trainee);
             countForValid++;
         }
         else {
-            invalid_Email.push(trainee);
+            invalidEmailStore.push(trainee);
             countForInvalid++;
         }
 
         if (validEmail(reviewer)) {
-            valid_Email.push(reviewer);
+            validEmailStore.push(reviewer);
             countForValid++;
 
         }
         else {
-            invalid_Email.push(reviewer);
+            invalidEmailStore.push(reviewer);
             countForInvalid++;
         }
 
@@ -68,7 +68,7 @@ const validUser = (users) => {
     });
     //calling for printUser function
 
-    printUser(valid_Email, invalid_Email, countForValid, countForInvalid);
+    printUser(validEmailStore, invalidEmailStore, countForValid, countForInvalid);
 
 
 
