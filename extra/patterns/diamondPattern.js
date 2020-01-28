@@ -28,13 +28,6 @@ const diamond = (row) => {
     for (let j = 0; j < spaceCount; j++) {
       space = space + " ";
     }
-<<<<<<< HEAD
-    for (let k = 0; k < (row - space_Count) * 2 - 1; k++) {
-      star = star + "*";
-
-    }
-    space_Count++;
-=======
 
     for (let k = 0; k < (row - spaceCount) * 2 - 1; k++) {
       star = star + "*";
@@ -42,7 +35,6 @@ const diamond = (row) => {
     }
 
     spaceCount++;
->>>>>>> d9c6261a2a6fdce01127d31aaa570368cc0756f0
     console.log(space + star);
     space = "";
     star = "";
