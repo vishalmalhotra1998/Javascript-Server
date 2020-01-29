@@ -1,8 +1,7 @@
-const user = [
-
+const users = [
     {
         traineeEmail: "vishal.malhotra@successive.tech",
-        reviewerEmail: "madhav.bansal@successive.tech",
+        reviewerEmail: "madhav.bansalsuccessive.tech",
 
     },
     {
@@ -10,7 +9,7 @@ const user = [
         reviewerEmail: "vinay.chaudhary@successive.tech",
 
     }
-]
+];
 const permissions = {
     'getUsers': {
         all: ['head-trainer'],
@@ -19,6 +18,6 @@ const permissions = {
         delete: [],
     },
 
-}
+};
 //Export the constants user and permission
-export {user,permissions};
+export { users, permissions };
