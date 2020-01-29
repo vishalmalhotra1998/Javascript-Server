@@ -1,47 +1,37 @@
-import validEmail from '../utils/helpers';
+import validateEmail from '../utils/helpers';
 import { Iemail } from '../interfaces';
-let countForValid = 0;
-let countForInvalid = 0;
-const validEmailStore = [];
-const invalidEmailStore = [];
+
 // Printing of vaild and invalid email user with thier counts.
-const printUser = (validEmails: string[], invalidEmails: string[], validCount: number, invalidCount: number): void => {
-    console.log('=> No. of Valid Users : ' + validCount + '\n');
-    validEmails.forEach(element => {
-        console.log('- ' + element + '\n');
-    });
-    console.log('=> No. of Invalid Users : ' + invalidCount + '\n');
-    invalidEmails.forEach(element => {
-        console.log('- ' + element + '\n');
-    });
+const printUser = (validEmail: string[], invalidEmail: string[], validCount: number, invalidCount: number): void => {
+    console.log('=> No. of Valid Users : ' + validCount);
+    console.log(validEmail);
+    console.log('=> No. of Invalid Users : ' + invalidCount);
+    console.log(invalidEmail);
 };
-// check for valid users
-const validUser = (users: Iemail[]): void => {
-    users.forEach(element => {
+// Check for valid users
+const validateUser = (users: Iemail[]) => {
+    let validUser = 0;
+    let invalidUser = 0;
+    const validUserStore = [];
+    const invalidUserStore = [];
+    users.forEach(user => {
         // Destructuring the object
-        const { traineeEmail: trainee, reviewerEmail: reviewer } = element;
-        if (validEmail(trainee)) {
-            validEmailStore.push(trainee);
-            countForValid++;
+        const { traineeEmail: trainee, reviewerEmail: reviewer } = user;
+        if (validateEmail(trainee) && validateEmail(reviewer)) {
+            validUserStore.push(trainee, reviewer);
+            validUser++;
         }
         else {
-            invalidEmailStore.push(trainee);
-            countForInvalid++;
-        }
-        if (validEmail(reviewer)) {
-            validEmailStore.push(reviewer);
-            countForValid++;
-        }
-        else {
-            invalidEmailStore.push(reviewer);
-            countForInvalid++;
+            invalidUserStore.push(trainee, reviewer);
+            invalidUser++;
         }
     });
-    // Calling for printUser function
-    printUser(validEmailStore, invalidEmailStore, countForValid, countForInvalid);
+    printUser(validUserStore, invalidUserStore, validUser, invalidUser);
 };
-// Export for valid user
-export default validUser;
+export default validateUser;
+
+
+
 
 
 

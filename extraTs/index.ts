@@ -1,6 +1,6 @@
 import { validDiamondRows } from './patterns';
 import { validEquilateralRows } from './patterns';
-import { validUser } from './utils';
+import { validateUser } from './utils';
 import { hasPermission } from './utils';
 import { user } from './constants';
  // process.argv[2];
@@ -10,6 +10,6 @@ validDiamondRows(5);
 console.log('\n');
 validEquilateralRows(7);
 console.log('\n');
-validUser(user);
+validateUser(user);
 console.log('\n');
-console.log(hasPermission('getUsers', 'head-trainer', 'delete'));
+console.log(hasPermission('getUsers', 'trainer', 'write'));

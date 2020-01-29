@@ -14,6 +14,6 @@ interface Iemail {
 }
 
 interface IpermissionSet {
-    [index: string]: Ipermissions;
+    getUsers: Ipermissions;
 }
 export { Iemail, IpermissionSet };
