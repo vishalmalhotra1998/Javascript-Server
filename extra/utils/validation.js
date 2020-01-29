@@ -1,4 +1,5 @@
-import validateEmail from '../utils/helpers'
+import validateEmail from '../utils/helpers';
+
 // Printing of vaild and invalid email user with thier counts.
 const printUser = (validEmail, invalidEmail, validCount, invalidCount) => {
     console.log("=> No. of Valid Users : " + validCount);
