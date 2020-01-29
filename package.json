@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "diamond": "node ./extra/patterns/diamondPattern.js",
-    "equilateral":"node ./extra/patterns/equilateralTriangle.js"
+    "equilateral": "node ./extra/patterns/equilateralTriangle.js",
+    "extra" : "npx babel-node extra"
   },
   "repository": {
     "type": "git",
@@ -17,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/vishalmalhotra1998/Javascript-Server/issues"
   },
-  "homepage": "https://github.com/vishalmalhotra1998/Javascript-Server#readme"
+  "homepage": "https://github.com/vishalmalhotra1998/Javascript-Server#readme",
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/node": "^7.8.3",
+    "@babel/preset-env": "^7.8.3"
+  }
 }

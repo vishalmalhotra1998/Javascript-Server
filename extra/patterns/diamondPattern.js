@@ -1,4 +1,3 @@
-
 // Function  for implementing diamond triangle
 const diamond = (row) => {
   let rowIndex = 0;
@@ -23,7 +22,6 @@ const diamond = (row) => {
     space = "";
 
   }
-
   // Logic for lower triangle
   for (let i = rowIndex; i < row * 2; i++) {
 
@@ -42,34 +40,23 @@ const diamond = (row) => {
     star = "";
   }
 }
+//Creating regex for input constraints
+const validDiamondRows = (rows) => {
+  const regex = /^([2-9]|1[0])$/;
+  //Using try catch for throwing errors
+  try {
+    // Regex for checking valid inputs
+    if (regex.test(rows)) {
+      diamond(rows);
+    }
 
-
-
-
-let rows = process.argv[2];
-
-// Creating regex for input constraints
-const regex = /^([2-9]|1[0])$/;
-
-//Using try catch for throwing errors
-try {
-
-  // Regex for checking valid inputs
-
-
-  if (regex.test(rows)) {
-
-    diamond(rows);
-
+    else {
+      throw Error("Invalid Input");
+    }
   }
-  else {
-
-    throw Error("Invalid Input");
-
-
+  catch (Error) {
+    console.log(Error.message);
   }
 }
-catch (Error) {
-  console.log(Error.message);
-
-}
+//Export function validDiamondRows
+export default validDiamondRows;
