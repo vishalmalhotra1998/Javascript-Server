@@ -1,12 +1,4 @@
-import validEmail from '../utils/helpers'
-
-// Export for valid user
-export default validUser;
-
-let validUser = 0;
-let invalidUser = 0;
-const validUserStore = [];
-const invalidUserStore = [];
+import validateEmail from '../utils/helpers'
 // Printing of vaild and invalid email user with thier counts.
 const printUser = (validEmail, invalidEmail, validCount, invalidCount) => {
     console.log("=> No. of Valid Users : " + validCount);
@@ -16,6 +8,10 @@ const printUser = (validEmail, invalidEmail, validCount, invalidCount) => {
 };
 // Check for valid users
 const validateUser = (users) => {
+    let validUser = 0;
+    let invalidUser = 0;
+    const validUserStore = [];
+    const invalidUserStore = [];
     users.forEach(user => {
         // Destructuring the object 
         const { traineeEmail: trainee, reviewerEmail: reviewer } = user;
@@ -30,7 +26,7 @@ const validateUser = (users) => {
     });
     printUser(validUserStore, invalidUserStore, validUser, invalidUser);
 };
-validateUser(users);
+export default validateUser;
 
 
 
