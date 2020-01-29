@@ -11,4 +11,4 @@ validEquilateralRows(rowForEquilateral);
 console.log('\n');
 validateUser(users)
 console.log('\n');
-console.log(hasPermission('getUsers', 'trainee', 'write'));
+console.log(hasPermission('getUsers', 'trainer', 'write'));
