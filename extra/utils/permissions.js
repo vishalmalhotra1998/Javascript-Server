@@ -1,15 +1,15 @@
 import { permissions } from "../constants.js"
-const hasPermission = (moduleName, role, permissionsType) => {
-    const a = permissions[moduleName][permissionsType];
-    console.log("permission ", moduleName, role, permissionsType);
-    let flag = false;
-    console.log()
-    a.forEach(element => {
-        if (element === role) {
-            flag = true;
-        }
-    });
-    return flag;
-}
-//Export hasPermission function
+
+// Function for checking the role in given permmisions
+const hasPermission = (moduleName, role, permissionType) => {
+    console.log('permission', moduleName, role, permissionType);
+    if (permissions.hasOwnProperty(moduleName)) {
+        return (permissions[moduleName][permissionType].includes(role)) || 
+        (permissions[moduleName].all && permissions[moduleName]['all'].includes(role));
+    }
+    return false;
+};
+
+console.log(hasPermission('getUsers', 'trainer', 'write'));
+
 export default hasPermission;
