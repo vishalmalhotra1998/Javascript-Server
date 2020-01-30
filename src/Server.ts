@@ -56,9 +56,9 @@ class Server {
             res.send('I am OK');
 
         });
-        // Creating route for middleware
+        // Creating route for api
         app.use('/api', (req: INewRequestUser, res, next) => {
-            console.log('I am in MiddleWare');
+
             req.user = {
                 id: '1',
                 name: 'Node'
