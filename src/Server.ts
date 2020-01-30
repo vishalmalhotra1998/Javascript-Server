@@ -8,20 +8,20 @@ class Server {
 
     }
 
-    // Bootstrap function is used for calling
+    // Bootstrap function is used for calling setupRoutes
     bootstrap = () => {
         this.setupRoutes();
         return this;
     }
 
     run = () => {
-        const { app, config: { port }
+        const { app, config: { PORT: port }
         } = this;
         app.listen(port, (error) => {
             if (error) {
                 throw (error);
             }
-            console.log('App is running succesfully');
+            console.log('App is running succesfully ' + port);
         });
 
     }
