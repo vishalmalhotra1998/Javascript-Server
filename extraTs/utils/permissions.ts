@@ -1,7 +1,7 @@
 import { permissions } from '../constants.js';
 
 // Function for checking the role in given permmisions
-const hasPermission = (moduleName, role, permissionType) => {
+const hasPermission = (moduleName: string, role: string, permissionType: string): boolean => {
     console.log('permission', moduleName, role, permissionType);
     if (permissions.hasOwnProperty(moduleName)) {
         return (permissions[moduleName][permissionType].includes(role)) ||
