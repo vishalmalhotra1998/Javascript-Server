@@ -5,15 +5,7 @@ import { Request } from 'express';
 import { Response } from 'express';
 import errorHandler from './libs/routes/errorHandler';
 import notFoundRoute from './libs/routes/notFoundRoute';
-
-interface IUser {
-    id: string;
-    name: string;
-
-}
-interface INewRequestUser extends Request {
-    user: IUser;
-}
+import { routeHandler } from './controller/trainee/index';
 
 // Created a class Server
 class Server {
@@ -57,14 +49,7 @@ class Server {
 
         });
         // Creating route for api
-        app.use('/api', (req: INewRequestUser, res, next) => {
-
-            req.user = {
-                id: '1',
-                name: 'Node'
-            };
-            res.send('Ok');
-        });
+        app.use('/api', routeHandler);
 
         app.use(notFoundRoute);
         app.use(errorHandler);
