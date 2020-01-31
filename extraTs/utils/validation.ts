@@ -15,7 +15,6 @@ const validateUser = (users: Iemail[]) => {
     const validUserStore = [];
     const invalidUserStore = [];
     users.forEach(user => {
-        // Destructuring the object
         const { traineeEmail: trainee, reviewerEmail: reviewer } = user;
         if (validateEmail(trainee) && validateEmail(reviewer)) {
             validUserStore.push(trainee, reviewer);
@@ -29,10 +28,6 @@ const validateUser = (users: Iemail[]) => {
     printUser(validUserStore, invalidUserStore, validUser, invalidUser);
 };
 export default validateUser;
-
-
-
-
 
 
 
