@@ -39,13 +39,12 @@ class Server {
     run = () => {
         const { app, config: { PORT: port }
         } = this;
-        app.listen(port, (error) => {
+        app.listen(port, error => {
             if (error) {
                 throw (error);
             }
-            console.log('App is running succesfully on port ' + port);
+            console.log('App is running succesfully at port number: ' + port);
         });
-
     }
 
     setupRoutes = () => {
