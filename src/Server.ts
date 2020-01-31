@@ -17,19 +17,18 @@ class Server {
     run = () => {
         const { app, config: { PORT: port }
         } = this;
-        app.listen(port, (error) => {
+        app.listen(port, error => {
             if (error) {
                 throw (error);
             }
-            console.log('App is running succesfully ' + port);
+            console.log('App is running succesfully at port number: ' + port);
         });
-
     }
 
     setupRoutes = () => {
         const { app } = this;
         // Creating route for health-check
-        app.use('/health-check', (req, res) => {
+        app.get('/health-check', (req, res) => {
 
             res.send('I am Ok');
         });
