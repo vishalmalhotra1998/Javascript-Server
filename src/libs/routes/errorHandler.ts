@@ -4,7 +4,7 @@ const errorHandler = (err, req, res, next) => {
         {
             error: err.error,
             status: err.code,
-            message: err.error || err.message,
+            message: 'error',
             timestamp: new Date()
         }
 
