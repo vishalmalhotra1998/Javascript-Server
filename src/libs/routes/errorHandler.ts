@@ -2,7 +2,7 @@ const errorHandler = (err, req, res, next) => {
 
     console.log('Error Message', err);
     const errorArray = [];
-    if (err.isArray) {
+    if (Array.isArray(err)) {
         err.forEach(element => {
             errorArray.push({
                 error: element,
