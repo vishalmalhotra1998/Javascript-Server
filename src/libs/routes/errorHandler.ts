@@ -14,13 +14,15 @@ const errorHandler = (err, req, res, next) => {
         });
 
         res.send({ errorArray });
+    } else {
+        res.send({
+            error: err.error,
+            message: 'error',
+            status: 500,
+            timestamp: new Date()
+
+        });
     }
-    res.send({
-        error: err.error,
-        message: 'error',
-        status: 500,
-        timestamp: new Date()
-    });
 };
 
 export default errorHandler;
