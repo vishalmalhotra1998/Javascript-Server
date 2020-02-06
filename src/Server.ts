@@ -5,7 +5,8 @@ import { Request } from 'express';
 import { Response } from 'express';
 import errorHandler from './libs/routes/errorHandler';
 import notFoundRoute from './libs/routes/notFoundRoute';
-import  mainRoute  from './router';
+import mainRoute from './router';
+import validationHandler from './libs/routes/validationHandler';
 
 // Created a class Server
 class Server {
@@ -17,14 +18,15 @@ class Server {
 
     // Bootstrap function is used for calling setupRoutes and initBodyParser
     bootstrap = (): Server => {
-        this.setupRoutes();
         this.initBodyParser();
+        this.setupRoutes();
+
         return this;
     }
 
     initBodyParser = (): void => {
         const { app } = this;
-        app.use(bodyParser.urlencoded({ extended: false }));
+        app.use(bodyParser.urlencoded({ extended: true }));
         app.use(bodyParser.json());
 
     }
@@ -47,6 +49,7 @@ class Server {
             res.send('I am OK');
 
         });
+        //    app.use(validationHandler);
         // Creating route for api
         app.use('/api', mainRoute);
         app.use(notFoundRoute);
