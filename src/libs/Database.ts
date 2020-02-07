@@ -9,6 +9,7 @@ class DataBase {
                 }
                 resolve();
             }).catch(error => (console.log(error)));
+            console.log('Data Base Connected Successfully');
         });
     }
     static disconnect = () => {
