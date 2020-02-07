@@ -8,7 +8,6 @@ class DataBase {
                     reject(err);
                 }
                 resolve();
-                console.log('DB Connected Successfully');
             }).catch(error => (console.log(error)));
         });
     }
