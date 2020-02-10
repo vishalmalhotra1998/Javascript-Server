@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
+import seedData from './seedData';
 class DataBase {
     static open = (mongoDbUrl: string) => {
+
         return new Promise((resolve, reject) => {
             mongoose.connect(mongoDbUrl, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
                 if (err) {
@@ -9,8 +11,10 @@ class DataBase {
                 }
                 resolve();
                 console.log('DB Connected Successfully');
+                seedData();
             }).catch(error => (console.log(error)));
         });
+
     }
     static disconnect = () => {
         console.log('Mongoose is Disconnected');

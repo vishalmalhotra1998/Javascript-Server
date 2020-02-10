@@ -8,7 +8,6 @@ export default (module, permissionType) => (req: Request, res: Response, next: N
 
         const token: string = req.headers.authorization;
         const { SECRET_KEY: secretKey } = config;
-
         const decodeUser = jwt.verify(token, secretKey);
         if (!decodeUser) {
             next({
@@ -17,13 +16,13 @@ export default (module, permissionType) => (req: Request, res: Response, next: N
                 message: 'Unauthorized Acess'
             });
         }
-        if (!hasPermission(module, decodeUser['role'], permissionType)) {
+        if (!hasPermission(module, decodeUser.role, permissionType)) {
             next({
                 status: 403,
                 error: 'Unauthorized Acess',
                 message: 'Unauthorized Acess'
 
-            })
+            });
         }
         next();
     }
