@@ -4,6 +4,7 @@ export default class UserSchema extends mongoose.Schema{
         const userSchema = {
             id: String,
             name: String,
+            email: String,
             address: String,
             dob: Date,
             mobileNumber: Number,

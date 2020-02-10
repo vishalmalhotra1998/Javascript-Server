@@ -2,13 +2,18 @@ import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import config from '../../config/configuration';
 import hasPermission from './permissions';
+import UserRepository from '../../repositories/users/UserRepository';
+import IRequest from './IRequest';
+import { request } from 'http';
+const userRepository = new UserRepository();
 
-export default (module, permissionType) => (req: Request, res: Response, next: NextFunction) => {
+export default (module, permissionType) => (req: IRequest, res: Response, next: NextFunction) => {
     try {
 
         const token: string = req.headers.authorization;
         const { SECRET_KEY: secretKey } = config;
         const decodeUser = jwt.verify(token, secretKey);
+
         if (!decodeUser) {
             next({
                 status: 403,
@@ -16,15 +21,28 @@ export default (module, permissionType) => (req: Request, res: Response, next: N
                 message: 'Unauthorized Acess'
             });
         }
-        if (!hasPermission(module, decodeUser.role, permissionType)) {
-            next({
-                status: 403,
-                error: 'Unauthorized Acess',
-                message: 'Unauthorized Acess'
+        const { _id, email } = decodeUser;
+        userRepository.findTheData({ _id, email }).then(user => {
+            if (!user) {
+                next({
+                    status: 403,
+                    error: 'Unauthorized acess',
+                    message: 'user does not exist'
+                });
+            }
+            req.user = user;
+        }).then(() => {
+            if (!hasPermission(module, decodeUser.role, permissionType)) {
+                next({
+                    status: 403,
+                    error: 'Unauthorized Acess',
+                    message: 'Unauthorized Acess'
 
-            });
-        }
-        next();
+                });
+            }
+            next();
+        });
+
     }
     catch (error) {
         next({
