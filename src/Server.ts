@@ -5,15 +5,7 @@ import { Request } from 'express';
 import { Response } from 'express';
 import errorHandler from './libs/routes/errorHandler';
 import notFoundRoute from './libs/routes/notFoundRoute';
-
-interface IUser {
-    id: string;
-    name: string;
-
-}
-interface INewRequestUser extends Request {
-    user: IUser;
-}
+import  mainRoute  from './router';
 
 // Created a class Server
 class Server {
@@ -24,19 +16,19 @@ class Server {
     }
 
     // Bootstrap function is used for calling setupRoutes and initBodyParser
-    bootstrap = () => {
+    bootstrap = (): Server => {
         this.setupRoutes();
         this.initBodyParser();
         return this;
     }
 
-    initBodyParser = () => {
+    initBodyParser = (): void => {
         const { app } = this;
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
 
     }
-    run = () => {
+    run = (): void => {
         const { app, config: { PORT: port }
         } = this;
         app.listen(port, error => {
@@ -47,7 +39,7 @@ class Server {
         });
     }
 
-    setupRoutes = () => {
+    setupRoutes = (): Server => {
         const { app } = this;
         // Creating route for health-check
         app.get('/health-check', (req: Request, res: Response) => {
@@ -56,15 +48,7 @@ class Server {
 
         });
         // Creating route for api
-        app.use('/api', (req: INewRequestUser, res, next) => {
-
-            req.user = {
-                id: '1',
-                name: 'Node'
-            };
-            res.send('Ok');
-        });
-
+        app.use('/api', mainRoute);
         app.use(notFoundRoute);
         app.use(errorHandler);
         return this;
