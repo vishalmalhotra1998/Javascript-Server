@@ -19,14 +19,25 @@ class UserRepository {
     }
 
     findTheData = (data) => {
-        return this.userModel.findById(data);
+        try {
+            return this.userModel.find(data, (error) => {
+                if (error) {
+                    throw error;
+                }
+            });
+        }
+        catch (error) {
+            throw error;
+        }
     }
 
 
     delete = (id: any) => {
         try {
-            return this.userModel.findByIdAndDelete(id, (err) => {
-                if (err) console.log(err);
+            return this.userModel.findByIdAndDelete(id, (error) => {
+                if (error) {
+                    throw error;
+                }
             });
         }
         catch (error) {
@@ -36,18 +47,26 @@ class UserRepository {
     }
     update = (id: any, dataToUpdate: object) => {
         try {
-            return this.userModel.findByIdAndUpdate(id, dataToUpdate);
-        } catch (err) {
-            throw err;
+            return this.userModel.findByIdAndUpdate(id, dataToUpdate, (error) => {
+                if (error) {
+                    throw error;
+                }
+            });
+        } catch (error) {
+            throw error;
         }
     }
     get = () => {
         try {
 
-            return this.userModel.find();
+            return this.userModel.find((error) => {
+                if (error) {
+                    throw error;
+                }
+            });
         }
-        catch (err) {
-            throw err;
+        catch (error) {
+            throw error;
         }
     }
 }

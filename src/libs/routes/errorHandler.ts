@@ -17,7 +17,7 @@ const errorHandler = (err, req, res, next) => {
     } else {
         res.send({
             error: err.error,
-            message: 'error',
+            message: err.message,
             status: 500,
             timestamp: new Date()
 

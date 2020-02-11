@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import UserRepository from '../../repositories/users/UserRepository';
 import SystemResponse from '../../libs/SystemResponse';
 import * as mongoose from 'mongoose';
+import IRequest from '../../libs/routes/IRequest';
 
 
 class UserController {
@@ -18,12 +19,16 @@ class UserController {
 
     }
 
+    me = (req: IRequest, res: Response): void => {
+        SystemResponse.success(res, req.user, 'Trainee Data Retrived');
+    }
+
     get = (req: Request, res: Response): void => {
 
         this.userRepository.get().then(data => {
             SystemResponse.success(res, data, 'Trainee Data Founded');
-        }).catch(err => {
-            throw err;
+        }).catch(error => {
+            throw error;
         });
 
     }
@@ -32,8 +37,8 @@ class UserController {
         const { id, dataToUpdate } = req.body;
         this.userRepository.update(id, dataToUpdate).then(data => {
             SystemResponse.success(res, data, 'Trainee Data Updated');
-        }).catch(err => {
-            throw err;
+        }).catch(error => {
+            throw error;
         });
     }
 

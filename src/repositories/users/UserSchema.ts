@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-export default class UserSchema extends mongoose.Schema{
+export default class UserSchema extends mongoose.Schema {
     constructor(options) {
         const userSchema = {
             id: String,

@@ -5,7 +5,7 @@ export default (config) => {
       // Check the In key for validations
       if (config[key].in) {
         config[key].in.forEach(location => {
-          let keyValue = req[location][key];
+          const keyValue = req[location][key];
           const values = Object.keys(req[location]);
 
           // If Body has this key is Presented
@@ -18,16 +18,17 @@ export default (config) => {
           }
           // Check For Skip and limit
           if (config[key].number && typeof (req[location][key] !== 'number')) {
+            if (req[location][key] === undefined && config[key].hasOwnProperty('default')) {
+              req[location][key] = config[key].default;
+            }
             if (values.includes(key)) {
-              if (!keyValue && config[key].default) {
-                keyValue = config[key].default;
+              if (!keyValue && (config[key].hasOwnProperty('default'))) {
+                console.log('Inside this', config[key].default);
+                req[location][key] = config[key].default;
               }
               if (isNaN(req[location][key])) {
                 arr.push(`${key} should be number`);
               }
-            }
-            else {
-              arr.push(`${key} should be Valid`);
             }
           }
           // If key contains regex module

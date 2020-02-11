@@ -17,17 +17,17 @@ export default (module, permissionType) => (req: IRequest, res: Response, next: 
         if (!decodeUser) {
             next({
                 status: 403,
-                error: 'Unauthorized Acess',
-                message: 'Unauthorized Acess'
+                error: 'Unauthorized Access',
+                message: 'Unauthorized Access'
             });
         }
         const { _id, email } = decodeUser;
         userRepository.findTheData({ _id, email }).then(user => {
-            if (!user) {
+            if (!user.length) {
                 next({
                     status: 403,
-                    error: 'Unauthorized acess',
-                    message: 'user does not exist'
+                    error: 'Unauthorized Access',
+                    message: 'User does not exist'
                 });
             }
             req.user = user;
@@ -35,19 +35,21 @@ export default (module, permissionType) => (req: IRequest, res: Response, next: 
             if (!hasPermission(module, decodeUser.role, permissionType)) {
                 next({
                     status: 403,
-                    error: 'Unauthorized Acess',
-                    message: 'Unauthorized Acess'
+                    error: 'Unauthorized Access',
+                    message: 'Unauthorized Access'
 
                 });
             }
             next();
+        }).catch(error => {
+            throw error;
         });
 
     }
     catch (error) {
         next({
             status: 403,
-            error: 'Unauthorized Acess',
+            error: 'Unauthorized Access',
             message: error.message
         });
     }
