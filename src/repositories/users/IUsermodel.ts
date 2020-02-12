@@ -1,4 +1,5 @@
-export interface IUserModel {
+import IVersionModel from './../versionable/IVersionableDocument';
+export interface IUserModel extends IVersionModel{
     id: string;
     name: string;
     address: string;
