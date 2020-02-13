@@ -1,6 +1,11 @@
 import * as mongoose from 'mongoose';
 export default interface IVersionModel extends mongoose.document {
 
-    createID: Date;
+    createdAt: Date;
+    createdBy: string;
+    modifiedAt: Date;
+    modifiedBy: string;
+    deletedAt: Date;
+    deletedBy: string;
 
 }

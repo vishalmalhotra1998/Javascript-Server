@@ -3,24 +3,34 @@ import * as mongoose from 'mongoose';
 import { IUserModel } from './../users/IUsermodel';
 import IUserCreate from './../users/IUserCreate';
 
-class VersionRepository {
+class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>> {
 
-    private userModel: mongoose.model<IUserModel>;
-    constructor() {
-        this.userModel = userModel;
+
+    private modelType: M;
+    constructor(modelType) {
+        this.modelType = modelType;
     }
-    create = (data: IUserCreate) => {
 
-        return this.userModel.create(data);
+    static generateObjectId() {
+        return String(mongoose.Types.ObjectId());
     }
-    count = () => {
-        return this.userModel.countDocuments();
-
+    create = (options): Promise<D> => {
+        const id = VersionRepository.generateObjectId();
+        console.log('-----verrrrr-----')
+        return this.modelType.create({
+            ...options,
+            _id: id,
+            originalID: id,
+        });
+    }
+    count = (): Promise<D> => {
+        console.log('Inside Versionable');
+        return this.modelType.countDocuments();
     }
 
     findTheData = (data) => {
         try {
-            return this.userModel.find(data, (error) => {
+            return this.modelType.find(data, (error) => {
                 if (error) {
                     throw error;
                 }
@@ -34,7 +44,7 @@ class VersionRepository {
 
     delete = (id: any) => {
         try {
-            return this.userModel.findByIdAndDelete(id, (error) => {
+            return this.modelType.findByIdAndDelete(id, (error) => {
                 if (error) {
                     throw error;
                 }
@@ -47,7 +57,7 @@ class VersionRepository {
     }
     update = (id: any, dataToUpdate: object) => {
         try {
-            return this.userModel.findByIdAndUpdate(id, dataToUpdate, (error) => {
+            return this.modelType.findByIdAndUpdate(id, dataToUpdate, (error) => {
                 if (error) {
                     throw error;
                 }
@@ -59,7 +69,7 @@ class VersionRepository {
     get = () => {
         try {
 
-            return this.userModel.find((error) => {
+            return this.modelType.find((error) => {
                 if (error) {
                     throw error;
                 }

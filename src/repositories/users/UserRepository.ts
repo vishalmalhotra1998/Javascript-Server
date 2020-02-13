@@ -2,19 +2,24 @@ import { userModel } from './UserModel';
 import * as mongoose from 'mongoose';
 import { IUserModel } from './IUsermodel';
 import IUserCreate from './IUserCreate';
+import VersionRepository from '../versionable/VersionRepository';
 
-class UserRepository {
+class UserRepository extends VersionRepository<IUserModel, mongoose.model<IUserModel>> {
 
     private userModel: mongoose.model<IUserModel>;
     constructor() {
-        this.userModel = userModel;
+        super(userModel);
     }
-    create = (data: IUserCreate) => {
-
-        return this.userModel.create(data);
+    static generateObjectId() {
+        return String(mongoose.Types.ObjectId());
+    }
+    create = (data: IUserCreate): Promise<IUserModel> => {
+        console.log(data);
+        return super.create(data);
     }
     count = () => {
-        return this.userModel.countDocuments();
+        console.log('Erorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+        return  super.count();
 
     }
 
