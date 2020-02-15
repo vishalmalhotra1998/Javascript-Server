@@ -14,7 +14,8 @@ export default () => {
 
     };
 
-    userRepository.count().then((count) => {
+    userRepository.count()
+    .then((count) => {
 
         if (!count) {
             return userRepository.create(user).then((res) => {

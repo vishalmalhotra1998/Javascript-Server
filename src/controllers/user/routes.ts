@@ -9,7 +9,7 @@ import IRequest from '../../libs/routes/IRequest';
 const routeHandler = Router();
 
 routeHandler.get('/', authMiddleware('getUsers', 'read'), validationChecker(validation.get), UserController.get);
-routeHandler.post('/', UserController.post);
+routeHandler.post('/', authMiddleware('getUsers', 'read'), validationChecker(validation.create), UserController.post);
 routeHandler.put('/', authMiddleware('getUsers', 'read'), validationChecker(validation.update), UserController.put);
 routeHandler.delete('/:id', authMiddleware('getUsers', 'read'), validationChecker(validation.delete), UserController.delete);
 routeHandler.get('/me', authMiddleware('getUsers', 'read'), validationChecker(validation.get), UserController.me);

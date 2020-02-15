@@ -4,32 +4,28 @@ import { IUserModel } from './IUsermodel';
 import IUserCreate from './IUserCreate';
 import VersionRepository from '../versionable/VersionRepository';
 
-class UserRepository extends VersionRepository<IUserModel, mongoose.model<IUserModel>> {
+class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserModel>> {
 
-    private userModel: mongoose.model<IUserModel>;
+    private userModel: mongoose.Model<IUserModel>;
     constructor() {
         super(userModel);
     }
     static generateObjectId() {
         return String(mongoose.Types.ObjectId());
     }
-    create = (data: IUserCreate): Promise<IUserModel> => {
-        console.log(data);
+    create = (data: any): Promise<IUserModel> => {
         return super.create(data);
     }
+
     count = () => {
-        console.log('Erorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-        return  super.count();
+
+        return super.count();
 
     }
 
     findTheData = (data) => {
         try {
-            return this.userModel.find(data, (error) => {
-                if (error) {
-                    throw error;
-                }
-            });
+            return super.findTheData(data);
         }
         catch (error) {
             throw error;
@@ -39,24 +35,16 @@ class UserRepository extends VersionRepository<IUserModel, mongoose.model<IUserM
 
     delete = (id: any) => {
         try {
-            return this.userModel.findByIdAndDelete(id, (error) => {
-                if (error) {
-                    throw error;
-                }
-            });
+            return super.delete(id);
         }
         catch (error) {
             throw error;
         }
 
     }
-    update = (id: any, dataToUpdate: object) => {
+    update = (_id: any, dataToUpdate: any) => {
         try {
-            return this.userModel.findByIdAndUpdate(id, dataToUpdate, (error) => {
-                if (error) {
-                    throw error;
-                }
-            });
+            return super.update(_id, dataToUpdate);
         } catch (error) {
             throw error;
         }
@@ -64,11 +52,7 @@ class UserRepository extends VersionRepository<IUserModel, mongoose.model<IUserM
     get = () => {
         try {
 
-            return this.userModel.find((error) => {
-                if (error) {
-                    throw error;
-                }
-            });
+            return super.get();
         }
         catch (error) {
             throw error;

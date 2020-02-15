@@ -7,5 +7,6 @@ export default interface IVersionModel extends mongoose.document {
     modifiedBy: string;
     deletedAt: Date;
     deletedBy: string;
+    originalId: string;
 
 }

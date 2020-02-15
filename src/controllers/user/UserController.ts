@@ -43,6 +43,8 @@ class UserController {
     }
 
     post = (req: Request, res: Response): void => {
+
+        console.log(req.body);
         this.userRepository.create(req.body).then(user => {
             SystemResponse.success(res, user, 'Trainee Data Added');
         }).catch(error => {
