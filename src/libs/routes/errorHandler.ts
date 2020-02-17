@@ -2,6 +2,7 @@ const errorHandler = (err, req, res, next) => {
 
     console.log('Error Message', err);
     const errorArray = [];
+    if(err.isArray){
     err.forEach(element => {
         errorArray.push({
             error: element,
@@ -12,7 +13,9 @@ const errorHandler = (err, req, res, next) => {
 
     });
 
-    res.send(errorArray);
+    res.send({errorArray});
+}
+res.send({err});
 };
 
 export default errorHandler;

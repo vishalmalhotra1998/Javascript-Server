@@ -1,4 +1,4 @@
-import { permissions } from '../constants';
+import { permissions } from './constants';
 
 // Function for checking the role in given permmisions
 const hasPermission = (moduleName: string, role: string, permissionType: string): boolean => {
