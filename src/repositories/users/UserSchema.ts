@@ -6,8 +6,10 @@ export default class UserSchema extends VersionSchema {
             id: String,
             name: String,
             email: String,
+            password: String,
             address: String,
             dob: Date,
+            role: String,
             mobileNumber: Number,
             hobbies: [String]
         };

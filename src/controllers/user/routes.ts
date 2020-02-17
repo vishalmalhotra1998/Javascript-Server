@@ -13,5 +13,6 @@ routeHandler.post('/', authMiddleware('getUsers', 'read'), validationChecker(val
 routeHandler.put('/', authMiddleware('getUsers', 'read'), validationChecker(validation.update), UserController.put);
 routeHandler.delete('/:id', authMiddleware('getUsers', 'read'), validationChecker(validation.delete), UserController.delete);
 routeHandler.get('/me', authMiddleware('getUsers', 'read'), validationChecker(validation.get), UserController.me);
+routeHandler.get('/login', authMiddleware('getUsers', 'read'), validationChecker(validation.get), UserController.login);
 
 export default routeHandler;

@@ -4,7 +4,6 @@ import config from '../../config/configuration';
 import hasPermission from './permissions';
 import UserRepository from '../../repositories/users/UserRepository';
 import IRequest from './IRequest';
-import { request } from 'http';
 const userRepository = new UserRepository();
 
 export default (module, permissionType) => (req: IRequest, res: Response, next: NextFunction) => {
@@ -31,6 +30,7 @@ export default (module, permissionType) => (req: IRequest, res: Response, next: 
                 });
             }
             req.user = user;
+            req.decodeUser = decodeUser;
         }).then(() => {
             if (!hasPermission(module, decodeUser.role, permissionType)) {
                 next({

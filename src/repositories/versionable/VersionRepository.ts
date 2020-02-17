@@ -1,20 +1,14 @@
-import { userModel } from './../users/UserModel';
 import * as mongoose from 'mongoose';
-import { IUserModel } from './../users/IUsermodel';
-import IUserCreate from './../users/IUserCreate';
 
 class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>> {
-
-
     private modelType: M;
     constructor(modelType) {
         this.modelType = modelType;
     }
-
     static generateObjectId() {
         return String(mongoose.Types.ObjectId());
     }
-    public create(options): Promise<D> {
+    create(options): Promise<D> {
         const id = VersionRepository.generateObjectId();
         return this.modelType.create({
             ...options,
@@ -41,21 +35,28 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     }
 
 
-    async delete(_id: any): Promise<D> {
+    async delete(originalID: any): Promise<D> {
         try {
-            const data = await this.modelType.find({ _id });
+            const _id = originalID;
+            const firstData = await this.modelType.find({ _id, deletedAt: undefined });
 
-            let { originalID } = data[0];
-            console.log(originalID);
-            if (originalID === undefined) {
-                originalID = data[0]._id;
+            console.log(firstData);
+            if (!firstData.length) {
+                const data = await this.modelType.find({ originalID, deletedAt: undefined });
+                return await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: originalID }, (error) => {
+                    if (error) {
+                        throw error;
+                    }
+                });
             }
+            else {
+                return await this.modelType.findOneAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: _id }, (error) => {
+                    if (error) {
+                        throw error;
+                    }
+                });
 
-            return await this.modelType.findByIdAndUpdate(_id, { deletedAt: new Date(), deletedBy: originalID }, (error) => {
-                if (error) {
-                    throw error;
-                }
-            });
+            }
         }
         catch (error) {
             throw error;
@@ -82,7 +83,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     get() {
         try {
 
-            return this.modelType.find({ deletedBy: null }, (error) => {
+            return this.modelType.find({ deletedBy: undefined }, (error) => {
                 if (error) {
                     throw error;
                 }
