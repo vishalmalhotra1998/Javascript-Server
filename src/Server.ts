@@ -6,7 +6,7 @@ import { Response } from 'express';
 import errorHandler from './libs/routes/errorHandler';
 import notFoundRoute from './libs/routes/notFoundRoute';
 import mainRoute from './router';
-import validationHandler from './libs/routes/validationHandler';
+import DataBase from './libs/Database';
 
 // Created a class Server
 class Server {
@@ -31,13 +31,15 @@ class Server {
 
     }
     run = (): void => {
-        const { app, config: { PORT: port }
+        const { app, config: { PORT: port, MONGO_URL: mongoDbUrl }
         } = this;
-        app.listen(port, error => {
-            if (error) {
-                throw (error);
-            }
-            console.log('App is running succesfully at port number: ' + port);
+        DataBase.open(mongoDbUrl).then(() => {
+            app.listen(port, error => {
+                if (error) {
+                    throw (error);
+                }
+                console.log('App is running succesfully at port number: ' + port);
+            });
         });
     }
 
