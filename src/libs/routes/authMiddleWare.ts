@@ -30,7 +30,6 @@ export default (module, permissionType) => (req: IRequest, res: Response, next: 
                 });
             }
             req.user = user;
-            req.decodeUser = decodeUser;
         }).then(() => {
             if (!hasPermission(module, decodeUser.role, permissionType)) {
                 next({

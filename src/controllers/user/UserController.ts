@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import UserRepository from '../../repositories/users/UserRepository';
 import SystemResponse from '../../libs/SystemResponse';
-import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import IRequest from '../../libs/routes/IRequest';
 import * as jwt from 'jsonwebtoken';
@@ -27,9 +26,7 @@ class UserController {
     }
 
     login = (req: any, res: Response): void => {
-
-        const { email, password } = req.user[0];
-        const loginPassword = req.decodeUser.password;
+        const { email: email, password: loginPassword } = req.body;
 
         this.userRepository.findTheData({ email }).then(async data => {
 
@@ -37,15 +34,17 @@ class UserController {
                 SystemResponse.success(res, { error: 'Invalid User' }, 'Invaid User');
             }
             else {
-                console.log(password, loginPassword);
-                const result = await bcrypt.compare(loginPassword, password);
+
+                const result = await bcrypt.compare(loginPassword, data[0].password);
                 if (result) {
 
-                    const token = jwt.sign({ email, password }, config.SECRET_KEY, { expireIn: 60 * 15 });
+                    const _id = data[0]._id;
+                    const role = data[0].role;
+                    const token = jwt.sign({ email, _id, role }, config.SECRET_KEY, { expiresIn: 60 * 60 });
                     SystemResponse.success(res, token, 'Token generated');
                 }
                 else {
-                    SystemResponse.success(res, { error: 'Invalid Password' }, 'Invaid Password');
+                    SystemResponse.success(res, { error: 'Invalid Password' }, 'Invalid Password');
                 }
 
             }
@@ -68,7 +67,13 @@ class UserController {
     put = (req: Request, res: Response): void => {
         const { id, dataToUpdate } = req.body;
         this.userRepository.update(id, dataToUpdate).then(data => {
-            SystemResponse.success(res, data, 'Trainee Data Updated');
+            if (!data) {
+                SystemResponse.success(res, data, 'Trainee Data Updated');
+            }
+            else {
+                SystemResponse.success(res, { error: 'Not Found' }, 'No data to update');
+
+            }
         }).catch(error => {
             throw error;
         });
@@ -87,7 +92,12 @@ class UserController {
     delete = (req: Request, res: Response): void => {
         const { id } = req.params;
         this.userRepository.delete(id).then(user => {
-            SystemResponse.success(res, user, 'Trainee Data Deleted');
+            if (user !== undefined) {
+                SystemResponse.success(res, user, 'Trainee Data Deleted');
+            }
+            else {
+                SystemResponse.success(res, { error: 'Not Found' }, 'No data to delete');
+            }
         }).catch(error => {
             throw error;
         });

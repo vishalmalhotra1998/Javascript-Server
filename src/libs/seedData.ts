@@ -1,5 +1,4 @@
 import UserRepository from '../repositories/users/UserRepository';
-import { userModel } from '../repositories/users/UserModel';
 import config from './../config/configuration';
 import * as bcrypt from 'bcrypt';
 const userRepository = new UserRepository();
@@ -21,7 +20,7 @@ export default async () => {
         name: 'Vishal Malhotra',
         address: 'Noida',
         dob: new Date('02-12-1998'),
-        email: 'vishalmalhotra1998',
+        email: 'trainee@successive.tech',
         password: hashPassword,
         role: 'trainee',
         mob: 8744907196,
