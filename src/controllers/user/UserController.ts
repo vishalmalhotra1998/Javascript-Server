@@ -64,19 +64,18 @@ class UserController {
 
     }
 
-    put = (req: Request, res: Response): void => {
+    put = async (req: Request, res: Response): Promise<void> => {
         const { id, dataToUpdate } = req.body;
-        this.userRepository.update(id, dataToUpdate).then(data => {
-            if (!data) {
-                SystemResponse.success(res, data, 'Trainee Data Updated');
-            }
-            else {
-                SystemResponse.success(res, { error: 'Not Found' }, 'No data to update');
+        try {
+            const data = await this.userRepository.update(id, dataToUpdate);
 
-            }
-        }).catch(error => {
-            throw error;
-        });
+
+            SystemResponse.success(res, data, 'Trainee Data Updated');
+        }
+        catch (error) {
+            SystemResponse.success(res, error, 'Invalid Input');
+
+        }
     }
 
     post = (req: Request, res: Response): void => {

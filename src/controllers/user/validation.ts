@@ -1,3 +1,7 @@
+import UserRepository from './../../repositories/users/UserRepository';
+import * as mongoose from 'mongoose';
+const userRepository = new UserRepository();
+
 export const validation = {
     create:
     {
@@ -69,23 +73,47 @@ export const validation = {
         id: {
             required: true,
             string: true,
-            in: ['body']
-        },
+            in: ['body'],
+            custom: (id) => {
+                const _id = id;
+                const check = mongoose.isValidObjectId(_id);
+                if (!check) {
+                    throw { error: 'Not a MongoDB ID' };
+                }
+            }
+        }
+        ,
         dataToUpdate: {
             in: ['body'],
             required: true,
             isObject: true,
-            custom: (dataToUpdate) => {
-                {
-                    if (!dataToUpdate) {
-                        throw ({
-                            error: 'error from custom function',
-                            message: 'Enter The Valid Object'
-                        });
-                    }
+            custom: async (dataToUpdate) => {
+
+                console.log('-----------------');
+
+                try {
+                    const errorKeyArray: string[] = [];
+                    const user = await userRepository.findTheData({ deletedAt: undefined });
+                    const dataToUpdateKeys = Object.keys(dataToUpdate);
+                    console.log(user);
+                    await dataToUpdateKeys.forEach(dataKey => {
+                        console.log('----------------', user[0]['_doc'], dataToUpdateKeys.length, user[0].hasOwnProperty(dataKey));
+                        if (!user[0].hasOwnProperty(dataKey)) {
+                            throw ({ error: 'Invalid Data ' + dataKey });
+                        }
+
+                    });
+
                 }
-            },
-        }
+                catch (error) {
+                    throw error;
+
+                }
+
+            }
+        },
     }
+
+
 };
 export default validation;

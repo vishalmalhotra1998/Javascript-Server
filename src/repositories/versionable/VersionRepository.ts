@@ -21,9 +21,11 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
         return this.modelType.countDocuments();
     }
 
-    findTheData(data) {
+    async findTheData(data) {
         try {
-            return this.modelType.find(data, (error) => {
+            console.log('Yahna');
+            console.log(data);
+            return await this.modelType.find(data, (error) => {
                 if (error) {
                     throw error;
                 }
@@ -48,7 +50,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
                     });
                 }
                 else {
-                    return data.length;
+                    return data[0];
                 }
             }
             else {
@@ -72,47 +74,45 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
             const firstData = await this.modelType.find({ _id, deletedAt: undefined });
             if (!firstData.length) {
                 const prevData = await this.modelType.findOne({ originalID, deletedAt: undefined });
-                if (prevData) {
-                    const newObject = Object.assign(prevData, dataToUpdate);
-                    let valueOriginalID = newObject._doc.originalID;
-                    if (valueOriginalID === undefined) {
-                        valueOriginalID = prevData._doc._id;
-                    }
-                    delete newObject._doc._id;
-                    delete newObject._doc.deletedAt;
-                    delete newObject._doc.deletedBy;
-                    const newObject1 = newObject._doc;
-                    await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
-                    return await this.modelType.create({ ...newObject1, modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
+                if (!prevData) {
+                    throw ({ error: 'ID is invalid' });
+
                 }
-                else {
-                    console.log(prevData);
-                    return prevData;
-                }
+
+                const newObject = Object.assign(prevData, dataToUpdate);
+                const valueOriginalID = newObject['originalID'];
+                delete newObject['_doc']['_id'];
+                delete newObject['_doc']['deleteAt'];
+                delete newObject['_doc']['deleteBy'];
+                const newObject1 = newObject;
+                await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
+                return await this.modelType.create({ ...newObject1['_doc'], modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
+
             }
+
             else {
                 const prevData = await this.modelType.findOne({ _id, deletedAt: undefined });
-                if (prevData) {
-                    const newObject = Object.assign(prevData, dataToUpdate);
-                    let valueOriginalID = newObject._doc.originalID;
-                    if (valueOriginalID === undefined) {
-                        valueOriginalID = prevData._doc._id;
-                    }
-                    delete newObject._doc._id;
-                    delete newObject._doc.deletedAt;
-                    delete newObject._doc.deletedBy;
-                    const newObject1 = newObject._doc;
-                    await this.modelType.findByIdAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
-                    return await this.modelType.create({ ...newObject1, modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
+                if (!prevData) {
+                    throw { error: 'ID is Invalid' };
+
                 }
-                else {
-                    console.log(prevData);
-                    return prevData;
+                const newObject = Object.assign(prevData, dataToUpdate);
+                let valueOriginalID = newObject['originalID'];
+                if (valueOriginalID === undefined) {
+                    valueOriginalID = prevData['_id'];
                 }
+                delete newObject['_doc']['_id'];
+                delete newObject['_doc']['deleteAt'];
+                delete newObject['_doc']['deleteBy'];
+                console.log(newObject);
+                const newObject1 = newObject;
+                await this.modelType.findByIdAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
+                return await this.modelType.create({ ...newObject1['_doc'], modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
+
             }
         }
         catch (error) {
-            return error;
+            throw { error: 'Invalid Id' };
         }
 
     }

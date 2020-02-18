@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-export default interface IVersionModel extends mongoose.document {
+export default interface IVersionModel extends mongoose.Document {
 
     createdAt: Date;
     createdBy: string;

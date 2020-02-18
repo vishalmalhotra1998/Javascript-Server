@@ -29,7 +29,7 @@ export default (module, permissionType) => (req: IRequest, res: Response, next: 
                     message: 'User does not exist'
                 });
             }
-            req.user = user;
+            req.user = user[0];
         }).then(() => {
             if (!hasPermission(module, decodeUser.role, permissionType)) {
                 next({
