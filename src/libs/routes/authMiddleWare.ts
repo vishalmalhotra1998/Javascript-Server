@@ -16,26 +16,26 @@ export default (module, permissionType) => (req: IRequest, res: Response, next: 
         if (!decodeUser) {
             next({
                 status: 403,
-                error: 'Unauthorized Access',
-                message: 'Unauthorized Access'
+                error: 'Unauthenticated Access',
+                message: 'Unauthenticated Access'
             });
         }
         const { _id, email } = decodeUser;
         userRepository.findTheData({ _id, email }).then(user => {
-            if (!user.length) {
+            if (!user) {
                 next({
                     status: 403,
                     error: 'Unauthorized Access',
                     message: 'User does not exist'
                 });
             }
-            req.user = user[0];
+            req.user = user;
         }).then(() => {
             if (!hasPermission(module, decodeUser.role, permissionType)) {
                 next({
                     status: 403,
                     error: 'Unauthorized Access',
-                    message: 'Unauthorized Access'
+                    message: 'Permission Denied'
 
                 });
             }

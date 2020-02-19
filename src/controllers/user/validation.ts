@@ -15,7 +15,7 @@ export const validation = {
             required: true,
             regex: '([a-zA-Z0-9\+_.])+@successive.tech',
             in: ['body'],
-            errorMessage: 'Name is required'
+            errorMessage: 'email is required'
 
         },
         mob: {
@@ -43,6 +43,19 @@ export const validation = {
             isObject: true,
             in: ['body'],
             errorMessage: 'Hobbies is required'
+        },
+        password: {
+            required: true,
+            string: true,
+            in: ['body'],
+            errorMessage: 'password is required'
+
+        },
+        role: {
+            required: true,
+            regex: '^[a-zA-Z\\s]*$',
+            in: ['body'],
+            errorMessage: 'Name is required',
         }
 
     },
@@ -50,7 +63,14 @@ export const validation = {
         id: {
             required: true,
             errorMessage: 'Id is required',
-            in: ['params']
+            in: ['params'],
+            custom: (id) => {
+                const _id = id;
+                const check = mongoose.isValidObjectId(id);
+                if (!check) {
+                    throw { error: 'Not a MongoDB ID' };
+                }
+            }
         }
     },
     get: {
@@ -87,29 +107,16 @@ export const validation = {
             in: ['body'],
             required: true,
             isObject: true,
-            custom: async (dataToUpdate) => {
-
-                console.log('-----------------');
-
-                try {
-                    const errorKeyArray: string[] = [];
-                    const user = await userRepository.findTheData({ deletedAt: undefined });
-                    const dataToUpdateKeys = Object.keys(dataToUpdate);
-                    console.log(user);
-                    await dataToUpdateKeys.forEach(dataKey => {
-                        console.log('----------------', user[0]['_doc'], dataToUpdateKeys.length, user[0].hasOwnProperty(dataKey));
-                        if (!user[0].hasOwnProperty(dataKey)) {
-                            throw ({ error: 'Invalid Data ' + dataKey });
-                        }
-
-                    });
-
+            custom: (dataToUpdate) => {
+                {
+                    console.log('In custom Function');
+                    if (!dataToUpdate) {
+                        throw ({
+                            error: 'error from custom function',
+                            message: 'Enter The Valid Object'
+                        });
+                    }
                 }
-                catch (error) {
-                    throw error;
-
-                }
-
             }
         },
     }

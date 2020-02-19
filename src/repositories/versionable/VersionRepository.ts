@@ -8,12 +8,17 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     static generateObjectId() {
         return String(mongoose.Types.ObjectId());
     }
-    create(options): Promise<D> {
+  async create(options): Promise<D> {
         const id = VersionRepository.generateObjectId();
-        return this.modelType.create({
+        let valueOriginalID = options.originalID;
+        if (valueOriginalID === undefined) {
+            valueOriginalID = id;
+        }
+        console.log(valueOriginalID);
+        return await this.modelType.create({
             ...options,
             _id: id,
-            createdBy: id
+            createdBy: valueOriginalID
         });
     }
 
@@ -23,13 +28,12 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
 
     async findTheData(data) {
         try {
-            console.log('Yahna');
             console.log(data);
-            return await this.modelType.find(data, (error) => {
+            return await this.modelType.findOne(data, (error) => {
                 if (error) {
                     throw error;
                 }
-            });
+            }).lean();
         }
         catch (error) {
             throw error;
@@ -38,11 +42,10 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     async delete(originalID: any): Promise<D> {
         try {
             const _id = originalID;
-            const firstData = await this.modelType.find({ _id, deletedAt: undefined });
-            if (!firstData.length) {
-                const data = await this.modelType.find({ originalID, deletedAt: undefined });
-                console.log(data);
-                if (data.length) {
+            const firstData = await this.modelType.findOne({ _id, deletedAt: undefined }).lean();
+            if (!firstData) {
+                const data = await this.modelType.findOne({ originalID, deletedAt: undefined }).lean();
+                if (data) {
                     return await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: originalID }, (error) => {
                         if (error) {
                             throw error;
@@ -50,7 +53,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
                     });
                 }
                 else {
-                    return data[0];
+                    return data;
                 }
             }
             else {
@@ -73,53 +76,45 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
             const _id = originalID;
             const firstData = await this.modelType.find({ _id, deletedAt: undefined });
             if (!firstData.length) {
-                const prevData = await this.modelType.findOne({ originalID, deletedAt: undefined });
+                const prevData = await this.modelType.findOne({ originalID, deletedAt: undefined }).lean();
                 if (!prevData) {
                     throw ({ error: 'ID is invalid' });
 
                 }
-
                 const newObject = Object.assign(prevData, dataToUpdate);
-                const valueOriginalID = newObject['originalID'];
-                delete newObject['_doc']['_id'];
-                delete newObject['_doc']['deleteAt'];
-                delete newObject['_doc']['deleteBy'];
-                const newObject1 = newObject;
+                const valueOriginalID = newObject.originalID;
+                delete newObject._id;
                 await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
-                return await this.modelType.create({ ...newObject1['_doc'], modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
+                return await this.create({ ...newObject, modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
 
             }
 
             else {
-                const prevData = await this.modelType.findOne({ _id, deletedAt: undefined });
+                const prevData = await this.modelType.findOne({ _id, deletedAt: undefined }).lean();
                 if (!prevData) {
                     throw { error: 'ID is Invalid' };
 
                 }
                 const newObject = Object.assign(prevData, dataToUpdate);
-                let valueOriginalID = newObject['originalID'];
+                let valueOriginalID = newObject.originalID;
                 if (valueOriginalID === undefined) {
-                    valueOriginalID = prevData['_id'];
+                    valueOriginalID = prevData._id;
                 }
-                delete newObject['_doc']['_id'];
-                delete newObject['_doc']['deleteAt'];
-                delete newObject['_doc']['deleteBy'];
-                console.log(newObject);
-                const newObject1 = newObject;
-                await this.modelType.findByIdAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
-                return await this.modelType.create({ ...newObject1['_doc'], modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
+                delete newObject._id;
+                await this.modelType.findOneAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
+                return await this.create({ ...newObject, modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
 
             }
         }
         catch (error) {
-            throw { error: 'Invalid Id' };
+            throw { error: 'Invalid is Id' };
         }
 
     }
-    get() {
+   async get() {
         try {
 
-            return this.modelType.find({ deletedBy: undefined }, (error) => {
+            return await this.modelType.find({ deletedBy: undefined }, (error) => {
                 if (error) {
                     throw error;
                 }

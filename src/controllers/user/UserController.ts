@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import IRequest from '../../libs/routes/IRequest';
 import * as jwt from 'jsonwebtoken';
 import config from './../../config/configuration';
+import { threadId } from 'worker_threads';
 
 
 class UserController {
@@ -25,42 +26,44 @@ class UserController {
         SystemResponse.success(res, req.user, 'Trainee Data Retrived');
     }
 
-    login = (req: any, res: Response): void => {
-        const { email: email, password: loginPassword } = req.body;
-
-        this.userRepository.findTheData({ email }).then(async data => {
-
+    login = async (req: any, res: Response): Promise<void> => {
+        const { email, password: loginPassword } = req.body;
+        try {
+            const data = await this.userRepository.findTheData({ email });
             if (!data) {
-                SystemResponse.success(res, { error: 'Invalid User' }, 'Invaid User');
+                throw ({ error: 'Email is invalid' });
+            }
+            const result = await bcrypt.compare(loginPassword, data.password);
+            if (result) {
+
+                const _id = data._id;
+                const role = data.role;
+                const token = jwt.sign({ email, _id, role }, config.SECRET_KEY, { expiresIn: (60 * 60) / 4 });
+                SystemResponse.success(res, token, 'Token generated');
             }
             else {
-
-                const result = await bcrypt.compare(loginPassword, data[0].password);
-                if (result) {
-
-                    const _id = data[0]._id;
-                    const role = data[0].role;
-                    const token = jwt.sign({ email, _id, role }, config.SECRET_KEY, { expiresIn: 60 * 60 });
-                    SystemResponse.success(res, token, 'Token generated');
-                }
-                else {
-                    SystemResponse.success(res, { error: 'Invalid Password' }, 'Invalid Password');
-                }
-
+                throw ({ error: 'Invalid Password' });
             }
+        }
+        catch (error) {
+            SystemResponse.success(res, error, 'Invalid Input');
+        }
 
-        }).catch(error => {
-            throw error;
-        });
+
 
     }
-    get = (req: Request, res: Response): void => {
+    get = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const user = await this.userRepository.get();
+            if (!user) {
+                throw ({ error: 'No Data To Find' });
 
-        this.userRepository.get().then(data => {
-            SystemResponse.success(res, data, 'Trainee Data Founded');
-        }).catch(error => {
-            throw error;
-        });
+            }
+            SystemResponse.success(res, user, 'Trainee Data Founded');
+        }
+        catch (error) {
+            SystemResponse.success(res, error, 'No data to Update');
+        }
 
     }
 
@@ -68,8 +71,6 @@ class UserController {
         const { id, dataToUpdate } = req.body;
         try {
             const data = await this.userRepository.update(id, dataToUpdate);
-
-
             SystemResponse.success(res, data, 'Trainee Data Updated');
         }
         catch (error) {
@@ -78,28 +79,43 @@ class UserController {
         }
     }
 
-    post = (req: Request, res: Response): void => {
+    post = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { email, password } = req.body;
+            const emailLowerCase = email.toLowerCase();
+            const checkForPreviousUser = await this.userRepository.findTheData({ email: emailLowerCase, deletedAt: undefined });
+            if (!checkForPreviousUser) {
+                const saltTable = 10;
+                const loginPassword = await bcrypt.hash(password, saltTable);
+                const passwordEncryptUser = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
+                const user = await this.userRepository.create(passwordEncryptUser);
 
-        this.userRepository.create(req.body).then(user => {
-            SystemResponse.success(res, user, 'Trainee Data Added');
-        }).catch(error => {
-            throw error;
-        });
+                SystemResponse.success(res, user, 'Trainee Created');
+            }
+            else {
+                throw ({ error: 'Email already been used' });
+            }
+        }
+        catch (error) {
 
+            SystemResponse.success(res, error, 'Email already beene used');
+        }
     }
 
-    delete = (req: Request, res: Response): void => {
-        const { id } = req.params;
-        this.userRepository.delete(id).then(user => {
-            if (user !== undefined) {
+    delete = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { id } = req.params;
+            const user = await this.userRepository.delete(id);
+            if (user) {
                 SystemResponse.success(res, user, 'Trainee Data Deleted');
             }
             else {
-                SystemResponse.success(res, { error: 'Not Found' }, 'No data to delete');
+                SystemResponse.success(res, { user: 'Not Found' }, 'No data to delete');
             }
-        }).catch(error => {
+        }
+        catch (error) {
             throw error;
-        });
+        }
     }
 
 }
