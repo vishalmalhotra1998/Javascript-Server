@@ -26,7 +26,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
         return this.modelType.countDocuments();
     }
 
-    async findTheData(data) {
+    async findTheData(data): Promise<D> {
         try {
             console.log(data);
             return await this.modelType.findOne(data, (error) => {

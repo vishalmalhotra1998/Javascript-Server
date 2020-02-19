@@ -55,7 +55,7 @@ export const validation = {
             required: true,
             regex: '^[a-zA-Z\\s]*$',
             in: ['body'],
-            errorMessage: 'Name is required',
+            errorMessage: 'Role is required',
         }
 
     },
