@@ -17,13 +17,13 @@ class UserRepository {
         return this.userModel.countDocuments();
     }
     findTheData = (data) => {
-        return this.userModel.findById(data);
+        return this.userModel.findOne({ _id: data }).lean();
     }
     delete = (id: any) => {
         return this.userModel.findByIdAndDelete(id);
     }
     update = (id: any, dataToUpdate: object) => {
-        return this.userModel.findByIdAndUpdate(id, dataToUpdate);
+        return this.userModel.findOneAndUpdate(id, dataToUpdate, { new: true });
     }
     get = () => {
         return this.userModel.find();

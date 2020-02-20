@@ -2,11 +2,15 @@ export default (config) => {
   return (req, res, next) => {
     const arr: string[] = [];
     // Function for checking Key Validation
-    const checkForOtherValues = (configKey, reqLocationKey, key): void => {
+    const checkForOtherValues = (configKey, reqLocationKey, key, location): void => {
       if (configKey.string && typeof (reqLocationKey) !== 'string') {
         arr.push(`${key} should be String`);
       }
       else if (configKey.number) {
+
+        if (!reqLocationKey.length) {
+          req[location][key] = configKey.default;
+        }
         if (isNaN(reqLocationKey)) {
           arr.push(`${configKey.errorMessage}`);
         }
@@ -45,14 +49,17 @@ export default (config) => {
       // Check the In key for validations
       if (config[key].in) {
         config[key].in.forEach(location => {
-          const reqKeyValue = req[location][key];
           if (config[key].required) {// if key is required
-            checkForOtherValues(config[key], req[location][key], key);
+            checkForOtherValues(config[key], req[location][key], key, location);
           }
           else {// if key is not required
             if (req[location].hasOwnProperty(key)) {// if property exist
-              checkForOtherValues(config[key], req[location][key], key);
+              checkForOtherValues(config[key], req[location][key], key, location);
+              console.log(key, req[location][key]);
 
+            }
+            else if (config[key].hasOwnProperty('default')) {
+              req[location][key] = config[key].default;
             }
           }
         });

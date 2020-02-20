@@ -17,7 +17,6 @@ class UserController {
     }
 
     get = (req: Request, res: Response): void => {
-
         this.userRepository.get().then(data => {
             SystemResponse.success(res, data, 'Trainee Data Founded');
         }).catch(error => {
