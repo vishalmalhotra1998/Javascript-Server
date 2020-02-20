@@ -13,6 +13,7 @@ class DataBase {
                 console.log('DB Connected Successfully');
                 seedData();
             }).catch(error => (console.log(error)));
+            console.log('Data Base Connected Successfully');
         });
 
     }
