@@ -55,8 +55,10 @@ class UserController {
     get = async (req: Request, res: Response): Promise<void> => {
         try {
             const { skip, limit, sortBy } = req.query;
-
-            const user = await this.userRepository.get(skip, limit, sortBy);
+            delete req.query.skip;
+            delete req.query.limit;
+            delete req.query.sortBy;
+            const user = await this.userRepository.get(skip, limit, sortBy, req.query);
             if (!user) {
                 throw ({ error: 'No Data To Find' });
 

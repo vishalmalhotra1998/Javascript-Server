@@ -49,10 +49,10 @@ class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserM
             throw error;
         }
     }
-    get = (skip, limit, sortBy) => {
+    get = (skip, limit, sortBy, search) => {
         try {
 
-            return super.get(skip, limit, sortBy);
+            return super.get(skip, limit, sortBy, search);
         }
         catch (error) {
             throw error;

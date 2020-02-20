@@ -111,10 +111,11 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
         }
 
     }
-    async get(skip, limit, sortBy): Promise<D[]> {
+    async get(skip, limit, sortBy, search): Promise<D[]> {
         try {
-
-            return await this.modelType.find({ deletedBy: undefined }, (error) => {
+            console.log('In this');
+            console.log(search);
+            return await this.modelType.find( {search, deletedBy: undefined }, (error) => {
                 if (error) {
                     throw error;
                 }

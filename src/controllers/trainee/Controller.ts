@@ -17,7 +17,10 @@ class TraineeController {
 
   get = async (req: Request, res: Response): Promise<void> => {
     const { skip, limit, sortBy } = req.query;
-    const allData = await this.userRepository.get(skip, limit, sortBy);
+    delete req.query.skip;
+    delete req.query.limit;
+    delete req.query.sortBy;
+    const allData = await this.userRepository.get(skip, limit, sortBy, req.query);
     const countLength = allData.length;
     res.send(
       {
