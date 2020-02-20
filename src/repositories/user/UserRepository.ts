@@ -1,11 +1,11 @@
 import { userModel } from './UserModel';
 import * as mongoose from 'mongoose';
-import { IUserModel } from './IUsermodel';
+import { IUserModel } from './IUserModel';
 import IUserCreate from './IUserCreate';
 
 class UserRepository {
 
-    private userModel: mongoose.model<IUserModel>;
+    private userModel: mongoose.Model<IUserModel>;
     constructor() {
         this.userModel = userModel;
     }
@@ -15,40 +15,18 @@ class UserRepository {
     }
     count = () => {
         return this.userModel.countDocuments();
-
     }
-
     findTheData = (data) => {
         return this.userModel.findById(data);
     }
-
-
     delete = (id: any) => {
-        try {
-            return this.userModel.findByIdAndDelete(id, (err) => {
-                if (err) console.log(err);
-            });
-        }
-        catch (error) {
-            throw error;
-        }
-
+        return this.userModel.findByIdAndDelete(id);
     }
     update = (id: any, dataToUpdate: object) => {
-        try {
-            return this.userModel.findByIdAndUpdate(id, dataToUpdate);
-        } catch (err) {
-            throw err;
-        }
+        return this.userModel.findByIdAndUpdate(id, dataToUpdate);
     }
     get = () => {
-        try {
-
-            return this.userModel.find();
-        }
-        catch (err) {
-            throw err;
-        }
+        return this.userModel.find();
     }
 }
 

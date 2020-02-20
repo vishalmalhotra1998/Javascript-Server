@@ -1,5 +1,5 @@
-import UserRepository from '../repositories/users/UserRepository';
-import { userModel } from '../repositories/users/UserModel';
+import UserRepository from '../repositories/user/UserRepository';
+import { userModel } from '../repositories/user/UserModel';
 const userRepository = new UserRepository();
 
 export default () => {
@@ -21,7 +21,6 @@ export default () => {
                 console.log('User Added Successfully', res);
             });
         }
-        console.log('User already Exist');
 
     });
 };
