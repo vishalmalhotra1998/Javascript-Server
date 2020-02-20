@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
+import UserRepository from './../../repositories/users/UserRepository';
 class TraineeController {
 
+  private userRepository = new UserRepository();
   static instance;
 
   static getInstance = (): TraineeController => {
@@ -13,19 +15,15 @@ class TraineeController {
 
   }
 
-  get = (req: Request, res: Response): void => {
+  get = async (req: Request, res: Response): Promise<void> => {
+    const { skip, limit, sortBy } = req.query;
+    const allData = await this.userRepository.get(skip, limit, sortBy);
+    const countLength = allData.length;
     res.send(
-      [{
-        id: '1',
-        traineeName: 'Trainee1',
-        reviewerName: 'Reviewer1'
-      },
       {
-        id: '2',
-        traineeName: 'Trainee2',
-        reviewerName: 'Reviewer2'
-      }]
-
+        Count: countLength,
+        allData
+      }
 
     );
 

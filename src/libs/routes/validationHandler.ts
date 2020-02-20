@@ -23,7 +23,6 @@ export default (config) => {
             }
             if (values.includes(key)) {
               if (!keyValue && (config[key].hasOwnProperty('default'))) {
-                console.log('Inside this', config[key].default);
                 req[location][key] = config[key].default;
               }
               if (isNaN(req[location][key])) {

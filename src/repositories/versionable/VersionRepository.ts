@@ -8,7 +8,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     static generateObjectId() {
         return String(mongoose.Types.ObjectId());
     }
-  async create(options): Promise<D> {
+    async create(options): Promise<D> {
         const id = VersionRepository.generateObjectId();
         let valueOriginalID = options.originalID;
         if (valueOriginalID === undefined) {
@@ -111,14 +111,14 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
         }
 
     }
-   async get() {
+    async get(skip, limit, sortBy): Promise<D[]> {
         try {
 
             return await this.modelType.find({ deletedBy: undefined }, (error) => {
                 if (error) {
                     throw error;
                 }
-            });
+            }).sort(String(sortBy)).skip(Number(skip)).limit(Number(limit));
         }
         catch (error) {
             throw error;
