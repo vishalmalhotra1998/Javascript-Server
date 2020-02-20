@@ -8,7 +8,7 @@ export default (config) => {
       }
       else if (configKey.number) {
 
-        if (!reqLocationKey.length) {
+        if (!reqLocationKey && configKey.hasOwnProperty('default')) {
           req[location][key] = configKey.default;
         }
         if (isNaN(reqLocationKey)) {
@@ -55,8 +55,6 @@ export default (config) => {
           else {// if key is not required
             if (req[location].hasOwnProperty(key)) {// if property exist
               checkForOtherValues(config[key], req[location][key], key, location);
-              console.log(key, req[location][key]);
-
             }
             else if (config[key].hasOwnProperty('default')) {
               req[location][key] = config[key].default;
