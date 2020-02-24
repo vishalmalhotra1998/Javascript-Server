@@ -10,8 +10,21 @@ const options = {
             title: 'My API',
             version: '1.0.0',
         },
-        servers: ['http://localhost:9000']
-    },
+        servers: ['http://localhost:9000'],
+        securityDefinations: {
+            components: {
+                securitySchemes: {
+                    bearerAuth: {
+                        type: 'apiKey',
+                        scheme: 'bearer',
+                        bearerFormat: 'JWT'
+                    }
+                }
+
+            },
+        }
+    }
+
 };
 const swaggerOptions = swaggerJsdoc(options);
 export default swaggerOptions;

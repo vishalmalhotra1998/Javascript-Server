@@ -23,7 +23,6 @@ class TraineeController {
     delete req.query.limit;
     delete req.query.sortBy;
     const queryParams = req.query.search;
-    console.log('th', queryParams, typeof queryParams);
     const newCHeck = queryString.parse(queryParams);
     console.log(newCHeck);
     const allData = await this.userRepository.get(skip, limit, sortBy, newCHeck);

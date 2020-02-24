@@ -36,6 +36,8 @@ routeHandler.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOptions));
  *         schema:
  *           type: string
  *         required: true
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *      '200':
  *        description: A successful Response
@@ -45,36 +47,62 @@ routeHandler.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOptions));
 routeHandler.get('/', traineeController.get);
 /**
  * @swagger
- * /api/trainee/my{skip,limit}:
+ * /api/trainee/:
  *  post:
- *    description: user to Request all Customer
- *    responses:
- *      '200':
- *        description: A successful Response
+ *      parameters:
+ *       - in: body
+ *         name: Body
+ *         schema:
+ *           type: object
+ *         required: true
+ *      security:
+ *       - bearerAuth: []
+ *      responses:
+ *       '200':
+ *         description: A successful Response
  *
  */
-console.log('CheckThis');
-routeHandler.post('/my', traineeController.post);
 routeHandler.post('/', authMiddleware('getUsers', 'read'), validationChecker(validation.create), traineeController.post);
 /**
  * @swagger
- * /:
+ * /api/trainee/:
  *  put:
- *    description: user to Request all Customer
- *    responses:
- *      '200':
- *        description: A successful Response
+ *      security:
+ *       - bearerAuth: [ ]
+ *      parameters:
+ *       - in: body
+ *         name: Body
+ *         schema:
+ *           type: object
+ *         required: true
+ *      responses:
+ *        '200':
+ *          description: 'Will send `Authenticated`'
  *
  */
 routeHandler.put('/', traineeController.put);
 /**
  * @swagger
- * /:
+ * /api/trainee/:id:
  *  delete:
- *    description: user to Request all Customer
- *    responses:
- *      '200':
- *        description: A successful Response
+ *      parameters:
+ *       - in: params
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *      components:
+ *       securitySchemes:
+ *         bearerAuth:
+ *           type: http
+ *           scheme: bearer
+ *           bearerFormat: JWT
+ *      security:
+ *       - bearerAuth: []
+ *      responses:
+ *       '200':
+ *         description: A successful Response
+ *
  *
  */
 routeHandler.delete('/:id', authMiddleware('getUsers', 'delete'), validationChecker(validation.delete), traineeController.delete);
