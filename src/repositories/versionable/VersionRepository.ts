@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 
+
 class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>> {
     private modelType: M;
     constructor(modelType) {
@@ -115,11 +116,26 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
         try {
             console.log('In this');
             console.log(search);
-            return await this.modelType.find( {search, deletedBy: undefined }, (error) => {
-                if (error) {
-                    throw error;
-                }
-            }).sort(String(sortBy)).skip(Number(skip)).limit(Number(limit));
+            const { name, email } = search;
+            if (!Object.keys(search).length) {
+                console.log('Search w');
+                return await this.modelType.find({ deletedBy: undefined }, (error) => {
+                    if (error) {
+                        throw error;
+                    }
+                }).sort(String(sortBy)).skip(Number(skip)).limit(Number(limit));
+            }
+            else {
+                console.log('Search');
+                const newSearch = JSON.stringify(search);
+                const newSearch1 = JSON.parse(newSearch);
+                console.log('check', newSearch1);
+                return await this.modelType.find({ ...newSearch1, deletedBy: undefined }, (error) => {
+                    if (error) {
+                        throw error;
+                    }
+                }).sort(String(sortBy)).skip(Number(skip)).limit(Number(limit));
+            }
         }
         catch (error) {
             throw error;

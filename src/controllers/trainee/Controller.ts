@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import * as queryString from 'query-string';
 import UserRepository from './../../repositories/users/UserRepository';
 class TraineeController {
 
@@ -17,10 +18,15 @@ class TraineeController {
 
   get = async (req: Request, res: Response): Promise<void> => {
     const { skip, limit, sortBy } = req.query;
+    console.log(req.query);
     delete req.query.skip;
     delete req.query.limit;
     delete req.query.sortBy;
-    const allData = await this.userRepository.get(skip, limit, sortBy, req.query);
+    const queryParams = req.query.search;
+    console.log('th', queryParams, typeof queryParams);
+    const newCHeck = queryString.parse(queryParams);
+    console.log(newCHeck);
+    const allData = await this.userRepository.get(skip, limit, sortBy, newCHeck);
     const countLength = allData.length;
     res.send(
       {
@@ -44,6 +50,7 @@ class TraineeController {
   }
 
   post = (req: Request, res: Response): void => {
+    console.log('Now this Last');
     res.send(
       {
         id: '1',

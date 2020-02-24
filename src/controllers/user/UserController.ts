@@ -36,7 +36,7 @@ class UserController {
             const result = await bcrypt.compare(loginPassword, data.password);
             if (result) {
 
-                const _id = data._id;
+                const _id = data.id;
                 const role = data.role;
                 const token = jwt.sign({ email, _id, role }, config.SECRET_KEY, { expiresIn: (60 * 60) / 4 });
                 SystemResponse.success(res, token, 'Token generated');

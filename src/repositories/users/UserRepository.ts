@@ -1,7 +1,6 @@
 import { userModel } from './UserModel';
 import * as mongoose from 'mongoose';
 import { IUserModel } from './IUsermodel';
-import IUserCreate from './IUserCreate';
 import VersionRepository from '../versionable/VersionRepository';
 
 class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserModel>> {
