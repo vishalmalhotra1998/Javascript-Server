@@ -6,4 +6,12 @@ export default class SystemResponse {
             data,
         });
     }
+    static failure = (res, error) => {
+        return res.status(422).send({
+            status: 'Error',
+            message: error.message
+
+        });
+    }
+
 }

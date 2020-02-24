@@ -11,7 +11,7 @@ export const validation = {
             required: true,
             regex: '([a-zA-Z0-9\+_.])+@successive.tech',
             in: ['body'],
-            errorMessage: 'Name is required'
+            errorMessage: 'Email is required'
 
         },
         mob: {
@@ -32,7 +32,7 @@ export const validation = {
             required: true,
             string: true,
             in: ['body'],
-            errorMessage: 'Dob is required'
+            errorMessage: 'Date of Birth is required'
         },
         hobbies: {
             required: true,
