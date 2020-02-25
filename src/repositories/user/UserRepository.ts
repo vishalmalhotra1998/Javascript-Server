@@ -1,32 +1,39 @@
 import { userModel } from './UserModel';
 import * as mongoose from 'mongoose';
 import { IUserModel } from './IUserModel';
-import IUserCreate from './IUserCreate';
+import VersionRepository from '../versionable/VersionRepository';
 
-class UserRepository {
+class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserModel>> {
 
     private userModel: mongoose.Model<IUserModel>;
     constructor() {
-        this.userModel = userModel;
+        super(userModel);
     }
-    create = (data: IUserCreate) => {
+    static generateObjectId() {
+        return String(mongoose.Types.ObjectId());
+    }
+    create = (data: any): Promise<IUserModel> => {
+        return super.create(data);
+    }
 
-        return this.userModel.create(data);
-    }
     count = () => {
-        return this.userModel.countDocuments();
+        return super.count();
     }
+
     findTheData = (data) => {
-        return this.userModel.findOne({ _id: data }).lean();
+        return super.findTheData(data);
     }
+
     delete = (id: any) => {
-        return this.userModel.findByIdAndDelete(id);
+        return super.delete(id);
     }
-    update = (id: any, dataToUpdate: object) => {
-        return this.userModel.findOneAndUpdate(id, dataToUpdate, { new: true });
+
+    update = (_id: any, dataToUpdate: any) => {
+        return super.update(_id, dataToUpdate);
     }
+
     get = () => {
-        return this.userModel.find();
+        return super.get();
     }
 }
 

@@ -14,7 +14,6 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
         if (valueOriginalID === undefined) {
             valueOriginalID = id;
         }
-        console.log(valueOriginalID);
         return await this.modelType.create({
             ...options,
             _id: id,
@@ -28,7 +27,6 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
 
     async findTheData(data): Promise<D> {
         try {
-            console.log(data);
             return await this.modelType.findOne(data, (error) => {
                 if (error) {
                     throw error;
@@ -74,7 +72,6 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     async  update(originalID: any, dataToUpdate: object): Promise<D> {
         try {
             const _id = originalID;
-            console.log('this');
             const firstData = await this.modelType.findOne({ _id, deletedAt: undefined }).lean();
             if (!firstData) {
                 const prevData = await this.modelType.findOne({ originalID, deletedAt: undefined }).lean();
