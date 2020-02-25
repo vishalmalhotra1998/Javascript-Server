@@ -15,8 +15,8 @@ const user: Iemail[] = [
 ];
 const permissions: IpermissionSet = {
     'getUsers': {
-        all: ['head-trainer', 'trainee'],
-        read: [ 'trainer'],
+        all: ['head-trainer'],
+        read: ['trainer', 'trainee'],
         write: ['trainer'],
         delete: [],
     },

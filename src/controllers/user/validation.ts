@@ -36,7 +36,7 @@ export const validation = {
         },
         hobbies: {
             required: true,
-            isObject: true,
+            isArray: true,
             in: ['body'],
             errorMessage: 'Hobbies is required'
         }

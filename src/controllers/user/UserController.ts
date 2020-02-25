@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import UserRepository from '../../repositories/user/UserRepository';
 import SystemResponse from '../../libs/SystemResponse';
+import IRequest from '../../libs/routes/IRequest';
+
 
 class UserController {
 
@@ -14,6 +16,10 @@ class UserController {
 
         return UserController.instance;
 
+    }
+
+    me = (req: IRequest, res: Response): void => {
+        SystemResponse.success(res, req.user, 'Trainee Data Retrieved');
     }
 
     get = (req: Request, res: Response): void => {
