@@ -15,7 +15,6 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
         if (valueOriginalID === undefined) {
             valueOriginalID = id;
         }
-        console.log(valueOriginalID);
         return await this.modelType.create({
             ...options,
             _id: id,
@@ -29,7 +28,6 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
 
     async findTheData(data): Promise<D> {
         try {
-            console.log(data);
             return await this.modelType.findOne(data, (error) => {
                 if (error) {
                     throw error;
@@ -114,11 +112,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     }
     async get(skip, limit, sortBy, search): Promise<D[]> {
         try {
-            console.log('In this');
-            console.log(search);
-            const { name, email } = search;
             if (!Object.keys(search).length) {
-                console.log('Search w');
                 return await this.modelType.find({ deletedBy: undefined }, (error) => {
                     if (error) {
                         throw error;
@@ -126,10 +120,8 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
                 }).sort(String(sortBy)).skip(Number(skip)).limit(Number(limit));
             }
             else {
-                console.log('Search');
                 const newSearch = JSON.stringify(search);
                 const newSearch1 = JSON.parse(newSearch);
-                console.log('check', newSearch1);
                 return await this.modelType.find({ ...newSearch1, deletedBy: undefined }, (error) => {
                     if (error) {
                         throw error;

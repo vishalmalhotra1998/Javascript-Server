@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import * as queryString from 'query-string';
 import UserRepository from './../../repositories/users/UserRepository';
+import SystemResponse from './../../libs/SystemResponse';
+import * as bcrypt from 'bcrypt';
 class TraineeController {
 
   private userRepository = new UserRepository();
@@ -18,13 +20,11 @@ class TraineeController {
 
   get = async (req: Request, res: Response): Promise<void> => {
     const { skip, limit, sortBy } = req.query;
-    console.log(req.query);
     delete req.query.skip;
     delete req.query.limit;
     delete req.query.sortBy;
     const queryParams = req.query.search;
     const newCHeck = queryString.parse(queryParams);
-    console.log(newCHeck);
     const allData = await this.userRepository.get(skip, limit, sortBy, newCHeck);
     const countLength = allData.length;
     res.send(
@@ -37,39 +37,56 @@ class TraineeController {
 
   }
 
-  put = (req: Request, res: Response): void => {
-    res.send(
-      {
-        id: '3',
-        traineeName: 'Trainee3',
-        reviewerName: 'Reviewer3'
-      }
+  put = async (req: Request, res: Response): Promise<void> => {
+    const { id, dataToUpdate } = req.body;
+    try {
+      const data = await this.userRepository.update(id, dataToUpdate);
+      SystemResponse.success(res, data, 'Trainee Data Updated');
+    }
+    catch (error) {
+      SystemResponse.success(res, error, 'Invalid Input');
 
-    );
+    }
   }
 
-  post = (req: Request, res: Response): void => {
-    console.log('Now this Last');
-    res.send(
-      {
-        id: '1',
-        traineeName: 'Trainee1',
-        reviewerName: 'Reviewer1'
-      }
+  post = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { email, password } = req.body;
+      const emailLowerCase = email.toLowerCase();
+      const checkForPreviousUser = await this.userRepository.findTheData({ email: emailLowerCase, deletedAt: undefined });
+      if (!checkForPreviousUser) {
+        const saltTable = 10;
+        const loginPassword = await bcrypt.hash(password, saltTable);
+        const passwordEncryptUser = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
+        const user = await this.userRepository.create(passwordEncryptUser);
 
-    );
+        SystemResponse.success(res, user, 'Trainee Created');
+      }
+      else {
+        throw ({ error: 'Email already been used' });
+      }
+    }
+    catch (error) {
+
+      SystemResponse.success(res, error, 'Email already beene used');
+    }
   }
 
-  delete = (req: Request, res: Response): void => {
-    res.send(
-      {
-        id: '1',
-        traineeName: 'Trainee1',
-        reviewerName: 'Reviewer1'
-      }
-
-    );
-  }
+  delete = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const user = await this.userRepository.delete(id);
+        if (user) {
+            SystemResponse.success(res, user, 'Trainee Data Deleted');
+        }
+        else {
+            SystemResponse.success(res, { user: 'Not Found' }, 'No data to delete');
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+}
 }
 export default TraineeController.getInstance();
 

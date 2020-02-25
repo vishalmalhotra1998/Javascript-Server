@@ -5,7 +5,6 @@ import * as bcrypt from 'bcrypt';
 import IRequest from '../../libs/routes/IRequest';
 import * as jwt from 'jsonwebtoken';
 import config from './../../config/configuration';
-import { threadId } from 'worker_threads';
 
 
 class UserController {

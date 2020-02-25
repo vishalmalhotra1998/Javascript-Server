@@ -1,6 +1,4 @@
-import UserRepository from './../../repositories/users/UserRepository';
 import * as mongoose from 'mongoose';
-const userRepository = new UserRepository();
 
 export const validation = {
     create:
