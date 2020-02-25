@@ -74,8 +74,9 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     async  update(originalID: any, dataToUpdate: object): Promise<D> {
         try {
             const _id = originalID;
-            const firstData = await this.modelType.find({ _id, deletedAt: undefined });
-            if (!firstData.length) {
+            console.log('this');
+            const firstData = await this.modelType.findOne({ _id, deletedAt: undefined }).lean();
+            if (!firstData) {
                 const prevData = await this.modelType.findOne({ originalID, deletedAt: undefined }).lean();
                 if (!prevData) {
                     throw ({ error: 'ID is invalid' });

@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
-import UserRepository from '../../repositories/users/UserRepository';
+import UserRepository from '../../repositories/user/UserRepository';
 import SystemResponse from '../../libs/SystemResponse';
 import * as bcrypt from 'bcrypt';
 import IRequest from '../../libs/routes/IRequest';
 import * as jwt from 'jsonwebtoken';
 import config from './../../config/configuration';
-import { threadId } from 'worker_threads';
 
 
 class UserController {
@@ -23,7 +22,7 @@ class UserController {
     }
 
     me = (req: IRequest, res: Response): void => {
-        SystemResponse.success(res, req.user, 'Trainee Data Retrived');
+        SystemResponse.success(res, req.user, 'Trainee Data Retrieved');
     }
 
     login = async (req: any, res: Response): Promise<void> => {
@@ -62,7 +61,7 @@ class UserController {
             SystemResponse.success(res, user, 'Trainee Data Founded');
         }
         catch (error) {
-            SystemResponse.success(res, error, 'No data to Update');
+            SystemResponse.failure(res, error);
         }
 
     }
@@ -74,7 +73,7 @@ class UserController {
             SystemResponse.success(res, data, 'Trainee Data Updated');
         }
         catch (error) {
-            SystemResponse.success(res, error, 'Invalid Input');
+            SystemResponse.failure(res, error);
 
         }
     }
@@ -98,7 +97,7 @@ class UserController {
         }
         catch (error) {
 
-            SystemResponse.success(res, error, 'Email already beene used');
+            SystemResponse.failure(res, error);
         }
     }
 
@@ -110,11 +109,11 @@ class UserController {
                 SystemResponse.success(res, user, 'Trainee Data Deleted');
             }
             else {
-                SystemResponse.success(res, { user: 'Not Found' }, 'No data to delete');
+                throw ({ error: 'User is Not Valid' });
             }
         }
         catch (error) {
-            throw error;
+            SystemResponse.failure(res, error);
         }
     }
 

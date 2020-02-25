@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { IUserModel } from './IUsermodel';
+import { IUserModel } from './IUserModel';
 import UserSchema from './UserSchema';
 
 export const userSchema = new UserSchema({
