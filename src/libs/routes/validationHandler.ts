@@ -21,6 +21,9 @@ export default (config) => {
       else if (configKey.isObject && Array.isArray(reqLocationKey)) {
         arr.push(`${key} should not be in type Array`);
       }
+      else if (configKey.isArray && !Array.isArray(reqLocationKey)) {
+        arr.push(`${key} should be in type Array`);
+      }
       // If key contains regex module
       if (configKey.regex && configKey.regex.length) {
         const regexString = new RegExp(configKey.regex);
