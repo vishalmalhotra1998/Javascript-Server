@@ -13,7 +13,7 @@ routeHandler.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOptions));
 // Routes
 /**
  * @swagger
- * /:
+ * /trainee:
  *  get:
  *     security:
  *       - Bearer: []
@@ -43,10 +43,6 @@ routeHandler.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOptions));
  *              description: 'Trainee Data retrived'
  *             '400':
  *              description: Bad request.
- *             '401':
- *              description: Authorization information is missing or invalid.
- *             '404':
- *              description: A user with the specified ID was not found.
  *             '5XX':
  *              description: Unexpected error.
  *
@@ -55,7 +51,7 @@ routeHandler.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOptions));
 routeHandler.get('/', authMiddleware('getUsers', 'read'), validationChecker(validation.get), traineeController.get);
 /**
  * @swagger
- * /:
+ * /trainee:
  *  post:
  *     security:
  *      - Bearer: []
@@ -90,13 +86,9 @@ routeHandler.get('/', authMiddleware('getUsers', 'read'), validationChecker(vali
  *               type: string
  *     responses:
  *             '200':
- *              description: 'Successfully Updated'
+ *              description: 'Successfully Created'
  *             '400':
- *              description: Bad request. User ID must be an integer and larger than 0.
- *             '401':
- *              description: Authorization information is missing or invalid.
- *             '404':
- *              description: A user with the specified ID was not found.
+ *              description: Bad request.
  *             '5XX':
  *              description: Unexpected error.
  *
@@ -105,7 +97,7 @@ routeHandler.get('/', authMiddleware('getUsers', 'read'), validationChecker(vali
 routeHandler.post('/', authMiddleware('getUsers', 'read'), validationChecker(validation.create), traineeController.post);
 /**
  * @swagger
- * /:
+ * /trainee:
  *  put:
  *     security:
  *       - Bearer: []
@@ -127,11 +119,7 @@ routeHandler.post('/', authMiddleware('getUsers', 'read'), validationChecker(val
  *        '200':
  *          description: 'Successfully Updated'
  *        '400':
- *         description: Bad request. User ID must be an integer and larger than 0.
- *        '401':
- *         description: Authorization information is missing or invalid.
- *        '404':
- *         description: A user with the specified ID was not found.
+ *         description: Bad request.
  *        '5XX':
  *         description: Unexpected error.
  *
@@ -140,10 +128,10 @@ routeHandler.post('/', authMiddleware('getUsers', 'read'), validationChecker(val
 routeHandler.put('/', authMiddleware('getUsers', 'write'), validationChecker(validation.update), traineeController.put);
 /**
  * @swagger
- * /{id}:
+ *  /trainee/{id}:
  *  delete:
  *      parameters:
- *       - in: params
+ *       - in: path
  *         name: id
  *         schema:
  *           type: string
@@ -154,11 +142,7 @@ routeHandler.put('/', authMiddleware('getUsers', 'write'), validationChecker(val
  *        '200':
  *          description: 'Successfully Updated'
  *        '400':
- *         description: Bad request. User ID must be an integer and larger than 0.
- *        '401':
- *         description: Authorization information is missing or invalid.
- *        '404':
- *         description: A user with the specified ID was not found.
+ *         description: Bad request.
  *        '5XX':
  *         description: Unexpected error.
  *

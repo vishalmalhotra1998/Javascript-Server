@@ -74,19 +74,20 @@ class TraineeController {
 
   delete = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
-        const user = await this.userRepository.delete(id);
-        if (user) {
-            SystemResponse.success(res, user, 'Trainee Data Deleted');
-        }
-        else {
-            SystemResponse.success(res, { user: 'Not Found' }, 'No data to delete');
-        }
+      const { id } = req.params;
+      const user = await this.userRepository.delete(id);
+      console.log(user);
+      if (user) {
+        SystemResponse.success(res, user, 'Trainee Data Deleted');
+      }
+      else {
+        SystemResponse.success(res, { user: 'Not Found' }, 'No data to delete');
+      }
     }
     catch (error) {
-        throw error;
+      throw error;
     }
-}
+  }
 }
 export default TraineeController.getInstance();
 

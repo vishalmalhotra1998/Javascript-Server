@@ -109,6 +109,7 @@ class UserController {
         try {
             const { id } = req.params;
             const user = await this.userRepository.delete(id);
+            console.log('deleted', user);
             if (user) {
                 SystemResponse.success(res, user, 'Trainee Data Deleted');
             }

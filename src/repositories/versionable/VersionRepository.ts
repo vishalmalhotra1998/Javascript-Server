@@ -28,11 +28,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
 
     async findTheData(data): Promise<D> {
         try {
-            return await this.modelType.findOne(data, (error) => {
-                if (error) {
-                    throw error;
-                }
-            }).lean();
+            return await this.modelType.findOne(data).lean();
         }
         catch (error) {
             throw error;
@@ -45,23 +41,15 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
             if (!firstData) {
                 const data = await this.modelType.findOne({ originalID, deletedAt: undefined }).lean();
                 if (data) {
-                    return await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: originalID }, (error) => {
-                        if (error) {
-                            throw error;
-                        }
-                    });
+                    return await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: originalID }, { new: true }).lean();
+
                 }
                 else {
                     return data;
                 }
             }
             else {
-                return await this.modelType.findOneAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: _id }, (error) => {
-                    if (error) {
-                        throw error;
-                    }
-                });
-
+                return await this.modelType.findOneAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: _id }, { new: true }).lean();
             }
         }
         catch (error) {
