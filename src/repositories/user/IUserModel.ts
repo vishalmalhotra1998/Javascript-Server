@@ -1,10 +1,12 @@
-import { Document } from 'mongoose';
-
-export interface IUserModel extends Document {
+import IVersionModel from './../versionable/IVersionableDocument';
+export interface IUserModel extends IVersionModel {
     id: string;
     name: string;
     address: string;
+    password: string;
+    email: string;
+    role: string;
     dob: Date;
-    mobileNumber: number;
+    mob: number;
     hobbies: string[];
 }

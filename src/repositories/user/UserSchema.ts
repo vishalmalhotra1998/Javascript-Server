@@ -1,13 +1,16 @@
 import * as mongoose from 'mongoose';
-export default class UserSchema extends mongoose.Schema {
+import VersionSchema from './../versionable/ VersionableSchema';
+export default class UserSchema extends VersionSchema {
     constructor(options) {
         const userSchema = {
             id: String,
             name: String,
             email: String,
+            password: String,
             address: String,
             dob: Date,
-            mobileNumber: Number,
+            role: String,
+            mob: Number,
             hobbies: [String]
         };
         super(userSchema, options);

@@ -1,3 +1,5 @@
+import * as mongoose from 'mongoose';
+
 export const validation = {
     create:
     {
@@ -39,6 +41,19 @@ export const validation = {
             isArray: true,
             in: ['body'],
             errorMessage: 'Hobbies is required'
+        },
+        password: {
+            required: true,
+            string: true,
+            in: ['body'],
+            errorMessage: 'password is required'
+
+        },
+        role: {
+            required: true,
+            regex: '^[a-zA-Z\\s]*$',
+            in: ['body'],
+            errorMessage: 'Role is required',
         }
 
     },
@@ -46,7 +61,14 @@ export const validation = {
         id: {
             required: true,
             errorMessage: 'Id is required',
-            in: ['params']
+            in: ['params'],
+            custom: (id) => {
+                const _id = id;
+                const check = mongoose.isValidObjectId(id);
+                if (!check) {
+                    throw { error: 'Not a MongoDB ID' };
+                }
+            }
         }
     },
     get: {
@@ -69,14 +91,23 @@ export const validation = {
         id: {
             required: true,
             string: true,
-            in: ['body']
-        },
+            in: ['body'],
+            custom: (id) => {
+                const _id = id;
+                const check = mongoose.isValidObjectId(_id);
+                if (!check) {
+                    throw { error: 'Not a MongoDB ID' };
+                }
+            }
+        }
+        ,
         dataToUpdate: {
             in: ['body'],
             required: true,
             isObject: true,
             custom: (dataToUpdate) => {
                 {
+                    console.log('In custom Function');
                     if (!dataToUpdate) {
                         throw ({
                             error: 'error from custom function',
@@ -84,8 +115,10 @@ export const validation = {
                         });
                     }
                 }
-            },
-        }
+            }
+        },
     }
+
+
 };
 export default validation;

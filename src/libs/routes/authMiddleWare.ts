@@ -21,7 +21,8 @@ export default (module, permissionType) => (req: IRequest, res: Response, next: 
         });
     }
     const { _id, email } = decodeUser;
-    userRepository.findTheData({ _id, email }).then(user => {
+    console.log(_id, email);
+    userRepository.get({ _id, email }).then(user => {
         if (!user) {
             next({
                 status: 403,
@@ -30,6 +31,7 @@ export default (module, permissionType) => (req: IRequest, res: Response, next: 
             });
         }
         req.user = user;
+        console.log('---------', req.user);
         if (!hasPermission(module, decodeUser.role, permissionType)) {
             next({
                 status: 403,

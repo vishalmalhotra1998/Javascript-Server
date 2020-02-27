@@ -11,5 +11,6 @@ routeHandler.post('/', authMiddleware('getUsers', 'write'), validationChecker(va
 routeHandler.put('/', authMiddleware('getUsers', 'write'), validationChecker(validation.update), UserController.put);
 routeHandler.delete('/:id', authMiddleware('getUsers', 'delete'), validationChecker(validation.delete), UserController.delete);
 routeHandler.get('/me', authMiddleware('getUsers', 'read'), validationChecker(validation.get), UserController.me);
+routeHandler.post('/login', UserController.login);
 
 export default routeHandler;
