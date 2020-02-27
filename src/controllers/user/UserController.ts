@@ -28,24 +28,24 @@ class UserController {
     login = async (req: any, res: Response): Promise<void> => {
         const { email, password: loginPassword } = req.body;
         try {
-            const data = await this.userRepository.findTheData({ email });
+            const data = await this.userRepository.get({ email });
             if (!data) {
-                throw ({ error: 'Email is invalid' });
+                throw ({ message: 'Email is invalid' });
             }
             const result = await bcrypt.compare(loginPassword, data.password);
             if (result) {
 
-                const _id = data.id;
+                const id = data.id;
                 const role = data.role;
-                const token = jwt.sign({ email, _id, role }, config.SECRET_KEY, { expiresIn: (60 * 60) / 4 });
+                const token = jwt.sign({ email, id, role }, config.SECRET_KEY, { expiresIn: (60 * 60) / 4 });
                 SystemResponse.success(res, token, 'Token generated');
             }
             else {
-                throw ({ error: 'Invalid Password' });
+                throw ({ message: 'Invalid Password' });
             }
         }
         catch (error) {
-            SystemResponse.success(res, error, 'Invalid Input');
+            SystemResponse.failure(res, error);
         }
 
 
@@ -53,7 +53,8 @@ class UserController {
     }
     get = async (req: Request, res: Response): Promise<void> => {
         try {
-            const user = await this.userRepository.get();
+            const query = req.query;
+            const user = await this.userRepository.list(query);
             if (!user) {
                 throw ({ error: 'No Data To Find' });
 
@@ -66,11 +67,18 @@ class UserController {
 
     }
 
-    put = async (req: Request, res: Response): Promise<void> => {
+    put = async (req: IRequest, res: Response): Promise<void> => {
         const { id, dataToUpdate } = req.body;
+        const authId = req.user.originalId;
         try {
-            const data = await this.userRepository.update(id, dataToUpdate);
-            SystemResponse.success(res, data, 'Trainee Data Updated');
+            const data = await this.userRepository.update({ id, authId }, dataToUpdate);
+            if (data) {
+                SystemResponse.success(res, data, 'Trainee Data Updated');
+            }
+            else {
+                throw ({ message: 'Not found' });
+
+            }
         }
         catch (error) {
             SystemResponse.failure(res, error);
@@ -78,21 +86,23 @@ class UserController {
         }
     }
 
-    post = async (req: Request, res: Response): Promise<void> => {
+    post = async (req: IRequest, res: Response): Promise<void> => {
         try {
             const { email, password } = req.body;
             const emailLowerCase = email.toLowerCase();
-            const checkForPreviousUser = await this.userRepository.findTheData({ email: emailLowerCase, deletedAt: undefined });
+            console.log(email, password);
+            const checkForPreviousUser = await this.userRepository.get({ email: emailLowerCase, deletedAt: undefined });
             if (!checkForPreviousUser) {
                 const saltTable = 10;
                 const loginPassword = await bcrypt.hash(password, saltTable);
-                const passwordEncryptUser = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
-                const user = await this.userRepository.create(passwordEncryptUser);
+                const updatedUser = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
+                const authId = req.user.originalId;
+                const user = await this.userRepository.create({ updatedUser, authId });
 
                 SystemResponse.success(res, user, 'Trainee Created');
             }
             else {
-                throw ({ error: 'Email already been used' });
+                throw ({ message: 'Email already been used' });
             }
         }
         catch (error) {
@@ -101,15 +111,16 @@ class UserController {
         }
     }
 
-    delete = async (req: Request, res: Response): Promise<void> => {
+    delete = async (req: IRequest, res: Response): Promise<void> => {
         try {
             const { id } = req.params;
-            const user = await this.userRepository.delete(id);
+            const authId = req.user.originalId;
+            const user = await this.userRepository.delete({ id, authId });
             if (user) {
                 SystemResponse.success(res, user, 'Trainee Data Deleted');
             }
             else {
-                throw ({ error: 'User is Not Valid' });
+                throw ({ message: 'Not Found' });
             }
         }
         catch (error) {

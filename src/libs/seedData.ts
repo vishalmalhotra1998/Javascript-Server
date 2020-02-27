@@ -31,12 +31,12 @@ export default async () => {
 
     userRepository.count()
         .then((count) => {
+            if (!count) {
+                const authId = '5e577abc417c5b3a22164a8c';
+                return userRepository.create({ user, authId }).then((res) => {
+                    console.log('User Added Successfully', res);
+                });
+            }
 
-        if (!count) {
-            return userRepository.create(user).then((res) => {
-                console.log('User Added Successfully', res);
-            });
-        }
-
-    });
+        });
 };

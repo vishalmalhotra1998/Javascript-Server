@@ -20,20 +20,20 @@ class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserM
         return super.count();
     }
 
-    findTheData = (data) => {
-        return super.findTheData(data);
+    list = (query: any = {}) => {
+        return super.list(query);
     }
 
-    delete = (id: any) => {
-        return super.delete(id);
+    delete = (data: any) => {
+        return super.delete(data);
     }
 
-    update = (_id: any, dataToUpdate: any) => {
-        return super.update(_id, dataToUpdate);
+    update = (data: object, dataToUpdate: object) => {
+        return super.update(data, dataToUpdate);
     }
 
-    get = () => {
-        return super.get();
+    get = (query) => {
+        return super.get(query);
     }
 }
 

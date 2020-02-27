@@ -8,119 +8,49 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     static generateObjectId() {
         return String(mongoose.Types.ObjectId());
     }
-  async create(options): Promise<D> {
+    async create(options): Promise<D> {
         const id = VersionRepository.generateObjectId();
-        let valueOriginalID = options.originalID;
-        if (valueOriginalID === undefined) {
-            valueOriginalID = id;
-        }
-        return await this.modelType.create({
-            ...options,
-            _id: id,
-            createdBy: valueOriginalID
-        });
-    }
+            const { user, authId } = options;
+            return await this.modelType.create({
+                ...user,
+                _id: id,
+                createdBy: authId,
+                originalId: id
 
-    count() {
-        return this.modelType.countDocuments();
-    }
-
-    async findTheData(data): Promise<D> {
-        try {
-            return await this.modelType.findOne(data, (error) => {
-                if (error) {
-                    throw error;
-                }
-            }).lean();
-        }
-        catch (error) {
-            throw error;
-        }
-    }
-    async delete(originalID: any): Promise<D> {
-        try {
-            const _id = originalID;
-            const firstData = await this.modelType.findOne({ _id, deletedAt: undefined }).lean();
-            if (!firstData) {
-                const data = await this.modelType.findOne({ originalID, deletedAt: undefined }).lean();
-                if (data) {
-                    return await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: originalID }, (error) => {
-                        if (error) {
-                            throw error;
-                        }
-                    });
-                }
-                else {
-                    return data;
-                }
-            }
-            else {
-                return await this.modelType.findOneAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: _id }, (error) => {
-                    if (error) {
-                        throw error;
-                    }
-                });
-
-            }
-        }
-        catch (error) {
-            throw error;
-        }
-
-    }
-
-    async  update(originalID: any, dataToUpdate: object): Promise<D> {
-        try {
-            const _id = originalID;
-            const firstData = await this.modelType.findOne({ _id, deletedAt: undefined }).lean();
-            if (!firstData) {
-                const prevData = await this.modelType.findOne({ originalID, deletedAt: undefined }).lean();
-                if (!prevData) {
-                    throw ({ error: 'ID is invalid' });
-
-                }
-                const newObject = Object.assign(prevData, dataToUpdate);
-                const valueOriginalID = newObject.originalID;
-                delete newObject._id;
-                await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
-                return await this.create({ ...newObject, modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
-
-            }
-
-            else {
-                const prevData = await this.modelType.findOne({ _id, deletedAt: undefined }).lean();
-                if (!prevData) {
-                    throw { error: 'ID is Invalid' };
-
-                }
-                const newObject = Object.assign(prevData, dataToUpdate);
-                let valueOriginalID = newObject.originalID;
-                if (valueOriginalID === undefined) {
-                    valueOriginalID = prevData._id;
-                }
-                delete newObject._id;
-                await this.modelType.findOneAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
-                return await this.create({ ...newObject, modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
-
-            }
-        }
-        catch (error) {
-            throw { error: 'Invalid is Id' };
-        }
-
-    }
-   async get() {
-        try {
-
-            return await this.modelType.find({ deletedBy: undefined }, (error) => {
-                if (error) {
-                    throw error;
-                }
             });
-        }
-        catch (error) {
-            throw error;
-        }
+
+    }
+
+    async count() {
+        return await this.modelType.countDocuments();
+    }
+
+    async get(data: object): Promise<D> {
+        return await this.modelType.findOne({ ...data, deletedBy: undefined }).lean();
+    }
+    async delete(data: any): Promise<D> {
+        const { id, authId } = data;
+        const update = { deletedAt: new Date(), deletedBy: authId };
+        return await this.modelType.findOneAndUpdate({ originalId: id, deletedAt: undefined }, update, { new: true });
+
+    }
+
+    async  update(data: any, dataToUpdate: object): Promise<D> {
+        const { id, authId } = data;
+        const currentData = await this.modelType.findOne({ originalId: id, deletedAt: undefined }).lean();
+        const newUpdatedData = Object.assign(currentData, dataToUpdate);
+        const valueOfOriginalID = newUpdatedData.originalId;
+        const update = { updatedBy: authId, originalId: valueOfOriginalID ,updatedAt: new Date()};
+        delete newUpdatedData._id;
+        await this.delete({ id, authId });
+        return await this.modelType.create({ ...newUpdatedData, update });
+
+
+    }
+    async list(query: any = {}) {
+        query.deletedAt = undefined;
+        return await this.modelType.find(query);
+
     }
 }
 
