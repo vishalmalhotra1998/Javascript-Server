@@ -1,12 +1,13 @@
-import UserRepository from '../repositories/users/UserRepository';
+import UserRepository from '../repositories/user/UserRepository';
 import config from './../config/configuration';
 import * as bcrypt from 'bcrypt';
-const userRepository = new UserRepository();
+
 
 export default async () => {
     const saltRounds = 10;
     const { PASSWORD: loginPassword } = config;
     let hashPassword: string;
+    const userRepository = new UserRepository();
     await bcrypt.hash(loginPassword, saltRounds).then((async hash => {
 
         hashPassword = hash;
@@ -30,14 +31,12 @@ export default async () => {
 
     userRepository.count()
         .then((count) => {
-
             if (!count) {
-                return userRepository.create(user).then((res) => {
+                const authId = '5e577abc417c5b3a22164a8c';
+                return userRepository.create({ user, authId }).then((res) => {
                     console.log('User Added Successfully', res);
                 });
             }
-            console.log('User already Exist');
 
         });
-
 };

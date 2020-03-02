@@ -2,54 +2,44 @@ import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import config from '../../config/configuration';
 import hasPermission from './permissions';
-import UserRepository from '../../repositories/users/UserRepository';
+import UserRepository from '../../repositories/user/UserRepository';
 import IRequest from './IRequest';
-const userRepository = new UserRepository();
+import SystemResponse from './../SystemResponse';
+
 
 export default (module, permissionType) => (req: IRequest, res: Response, next: NextFunction) => {
-    try {
 
-        const token: string = req.headers.authorization;
-        const { SECRET_KEY: secretKey } = config;
-        const decodeUser = jwt.verify(token, secretKey);
-
-        if (!decodeUser) {
-            next({
-                status: 403,
-                error: 'Unauthenticated Access',
-                message: 'Unauthenticated Access'
-            });
-        }
-        const { _id, email } = decodeUser;
-        userRepository.findTheData({ _id, email }).then(user => {
-            if (!user) {
-                next({
-                    status: 403,
-                    error: 'Unauthorized Access',
-                    message: 'User does not exist'
-                });
-            }
-            req.user = user;
-        }).then(() => {
-            if (!hasPermission(module, decodeUser.role, permissionType)) {
-                next({
-                    status: 403,
-                    error: 'Unauthorized Access',
-                    message: 'Permission Denied'
-
-                });
-            }
-            next();
-        }).catch(error => {
-            throw error;
-        });
-
-    }
-    catch (error) {
+    const token: string = req.headers.authorization;
+    const { SECRET_KEY: secretKey } = config;
+    const decodeUser = jwt.verify(token, secretKey);
+    const userRepository = new UserRepository();
+    if (!decodeUser) {
         next({
             status: 403,
             error: 'Unauthorized Access',
-            message: error.message
+            message: 'Unauthorized Access'
         });
     }
+    const { originalId, email } = decodeUser;
+    userRepository.get({ originalId, email }).then(user => {
+        if (!user) {
+            next({
+                status: 403,
+                error: 'Unauthorized Access',
+                message: 'User does not exist'
+            });
+        }
+        req.user = user;
+        if (!hasPermission(module, decodeUser.role, permissionType)) {
+            next({
+                status: 403,
+                error: 'Unauthorized Access',
+                message: 'Permission Denied'
+
+            });
+        }
+        next();
+    }).catch(error => {
+        SystemResponse.failure(res, error);
+    });
 };

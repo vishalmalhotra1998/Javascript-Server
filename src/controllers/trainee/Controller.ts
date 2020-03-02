@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import UserRepository from './../../repositories/users/UserRepository';
+import UserRepository from './../../repositories/user/UserRepository';
+import SystemResponse from './../../libs/SystemResponse';
 class TraineeController {
 
   private userRepository = new UserRepository();
@@ -16,16 +17,18 @@ class TraineeController {
   }
 
   get = async (req: Request, res: Response): Promise<void> => {
-    const { skip, limit, sortBy } = req.query;
-    const allData = await this.userRepository.get(skip, limit, sortBy);
-    const countLength = allData.length;
-    res.send(
-      {
-        Count: countLength,
-        allData
-      }
+    try {
+      const query = req.query;
+      const user = await this.userRepository.list(query);
+      if (!user.length) {
+        throw ({ error: 'No Data To Find' });
 
-    );
+      }
+      SystemResponse.success(res, { count: user.length, user }, 'Trainee Data Founded');
+    }
+    catch (error) {
+      SystemResponse.failure(res, error);
+    }
 
   }
 

@@ -7,6 +7,6 @@ export interface IUserModel extends IVersionModel {
     email: string;
     role: string;
     dob: Date;
-    mobileNumber: number;
+    mob: number;
     hobbies: string[];
 }

@@ -1,6 +1,4 @@
 const errorHandler = (err, req, res, next) => {
-
-    console.log('Error Message', err);
     const error = [];
     if (Array.isArray(err)) {
         err.forEach(element => {
@@ -16,8 +14,8 @@ const errorHandler = (err, req, res, next) => {
         res.send({ error });
     } else {
         res.send({
-            error: err.error,
-            message: err.message,
+            error: err.message,
+            message: 'error',
             status: 500,
             timestamp: new Date()
 

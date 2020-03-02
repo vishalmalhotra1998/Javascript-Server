@@ -10,7 +10,7 @@ export default class UserSchema extends VersionSchema {
             address: String,
             dob: Date,
             role: String,
-            mobileNumber: Number,
+            mob: Number,
             hobbies: [String]
         };
         super(userSchema, options);
