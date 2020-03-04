@@ -21,7 +21,7 @@
     "lint": "./node_modules/tslint/bin/tslint -c tslint.json -p tsconfig.json --exclude 'node_modules/**/*.{j,t}s'",
     "lint:fix": "npm run lint --fix",
     "pre-commit": "npm test",
-    "pre-push":"npm run lint"
+    "pre-push": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -52,6 +52,7 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "mongoose": "^5.8.11"
+    "mongoose": "^5.8.11",
+    "query-string": "^6.11.1"
   }
 }

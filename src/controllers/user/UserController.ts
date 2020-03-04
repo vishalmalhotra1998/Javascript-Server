@@ -35,9 +35,9 @@ class UserController {
             const result = await bcrypt.compare(loginPassword, data.password);
             if (result) {
 
-                const id = data.id;
+                const originalId = data.originalId;
                 const role = data.role;
-                const token = jwt.sign({ email, id, role }, config.SECRET_KEY, { expiresIn: (60 * 60) / 4 });
+                const token = jwt.sign({ email, originalId, role }, config.SECRET_KEY, { expiresIn: (60 * 60) / 4 });
                 SystemResponse.success(res, token, 'Token generated');
             }
             else {
@@ -95,11 +95,11 @@ class UserController {
             if (!checkForPreviousUser) {
                 const saltTable = 10;
                 const loginPassword = await bcrypt.hash(password, saltTable);
-                const updatedUser = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
+                const user = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
                 const authId = req.user.originalId;
-                const user = await this.userRepository.create({ updatedUser, authId });
+                const data = await this.userRepository.create({ user, authId });
 
-                SystemResponse.success(res, user, 'Trainee Created');
+                SystemResponse.success(res, data, 'Trainee Created');
             }
             else {
                 throw ({ message: 'Email already been used' });
