@@ -95,11 +95,11 @@ class UserController {
             if (!checkForPreviousUser) {
                 const saltTable = 10;
                 const loginPassword = await bcrypt.hash(password, saltTable);
-                const updatedUser = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
+                const user = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
                 const authId = req.user.originalId;
-                const user = await this.userRepository.create({ updatedUser, authId });
+                const data = await this.userRepository.create({ user, authId });
 
-                SystemResponse.success(res, user, 'Trainee Created');
+                SystemResponse.success(res, data, 'Trainee Created');
             }
             else {
                 throw ({ message: 'Email already been used' });

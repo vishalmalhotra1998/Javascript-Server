@@ -14,6 +14,9 @@ export default (config) => {
         if (isNaN(reqLocationKey)) {
           arr.push(`${configKey.errorMessage}`);
         }
+        else {
+          req[location][key] = Number(req[location][key]);
+        }
       }
       else if (configKey.isObject && typeof reqLocationKey !== 'object') {// If Key contains isObject and Checks the Object is retrived from Location
         arr.push(`${key} is required of type object`);

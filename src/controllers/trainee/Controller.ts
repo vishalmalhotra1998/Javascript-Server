@@ -16,15 +16,17 @@ class TraineeController {
 
   }
 
-  get = async (req: Request, res: Response): Promise<void> => {
+  list = async (req: Request, res: Response): Promise<void> => {
     try {
-      const query = req.query;
-      const user = await this.userRepository.list(query);
-      if (!user.length) {
+
+      const { skip, limit, sortBy, ...query } = req.query;
+      console.log(sortBy, query);
+      const data = await this.userRepository.list(query, { skip, limit, sortBy });
+      if (!data.length) {
         throw ({ error: 'No Data To Find' });
 
       }
-      SystemResponse.success(res, { count: user.length, user }, 'Trainee Data Founded');
+      SystemResponse.success(res, { count: data.length, data }, 'Trainee Data Founded');
     }
     catch (error) {
       SystemResponse.failure(res, error);
