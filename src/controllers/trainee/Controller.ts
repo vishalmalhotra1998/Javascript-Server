@@ -23,10 +23,6 @@ class TraineeController {
     try {
 
       const { skip, limit, sortBy, search, ...query } = req.query;
-
-     const stringified = queryString.parse(search);
-     console.log(stringified);
-
       const data = await this.userRepository.list(query, { skip, limit, sortBy, search });
       if (!data.length) {
         throw ({ error: 'No Data To Find' });

@@ -21,7 +21,6 @@ export default (module, permissionType) => (req: IRequest, res: Response, next: 
     });
   }
   const { _id : originalId, email } = decodeUser;
-  console.log(decodeUser,'hyuj');
   userRepository.get({ originalId, email }).then(user => {
     if (!user) {
       next({
