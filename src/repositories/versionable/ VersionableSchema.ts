@@ -8,9 +8,9 @@ export default class VersionSchema extends mongoose.Schema {
                 type: Date,
                 default: Date.now
             },
-            originalID: String,
-            modifiedAt: Date,
-            modifiedBy: String,
+            originalId: String,
+            updatedAt: Date,
+            updatedBy: String,
             deletedAt: Date,
             deletedBy: String,
             createdBy: String

@@ -1,126 +1,63 @@
 import * as mongoose from 'mongoose';
+import * as queryString from 'query-string';
 
 
 class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>> {
-    private modelType: M;
-    constructor(modelType) {
-        this.modelType = modelType;
-    }
-    static generateObjectId() {
-        return String(mongoose.Types.ObjectId());
-    }
-    async create(options): Promise<D> {
-        const id = VersionRepository.generateObjectId();
-        let valueOriginalID = options.originalID;
-        if (valueOriginalID === undefined) {
-            valueOriginalID = id;
-        }
-        return await this.modelType.create({
-            ...options,
-            _id: id,
-            createdBy: valueOriginalID
-        });
-    }
+  private modelType: M;
+  constructor(modelType) {
+    this.modelType = modelType;
+  }
+  static generateObjectId() {
+    return String(mongoose.Types.ObjectId());
+  }
+  async create(options): Promise<D> {
+    const id = VersionRepository.generateObjectId();
+    const { user, authId } = options;
+    return await this.modelType.create({
+      ...user,
+      _id: id,
+      createdBy: authId,
+      originalId: id
 
-    count() {
-        return this.modelType.countDocuments();
-    }
+    });
 
-    async findTheData(data): Promise<D> {
-        try {
-            return await this.modelType.findOne(data).lean();
-        }
-        catch (error) {
-            throw error;
-        }
-    }
-    async delete(originalID: any): Promise<D> {
-        try {
-            const _id = originalID;
-            const firstData = await this.modelType.findOne({ _id, deletedAt: undefined }).lean();
-            if (!firstData) {
-                const data = await this.modelType.findOne({ originalID, deletedAt: undefined }).lean();
-                if (data) {
-                    return await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: originalID }, { new: true }).lean();
+  }
 
-                }
-                else {
-                    return data;
-                }
-            }
-            else {
-                return await this.modelType.findOneAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: _id }, { new: true }).lean();
-            }
-        }
-        catch (error) {
-            throw error;
-        }
+  async count() {
+    return await this.modelType.countDocuments();
+  }
 
-    }
+  async get(data: object): Promise<D> {
+    return await this.modelType.findOne({ ...data, deletedBy: undefined }).lean();
+  }
+  async delete(data: any): Promise<D> {
+    const { id, authId } = data;
+    const update = { deletedAt: new Date(), deletedBy: authId };
+    return await this.modelType.findOneAndUpdate({ originalId: id, deletedAt: undefined }, update, { new: true });
 
-    async  update(originalID: any, dataToUpdate: object): Promise<D> {
-        try {
-            const _id = originalID;
-            const firstData = await this.modelType.find({ _id, deletedAt: undefined });
-            if (!firstData.length) {
-                const prevData = await this.modelType.findOne({ originalID, deletedAt: undefined }).lean();
-                if (!prevData) {
-                    throw ({ error: 'ID is invalid' });
+  }
 
-                }
-                const newObject = Object.assign(prevData, dataToUpdate);
-                const valueOriginalID = newObject.originalID;
-                delete newObject._id;
-                await this.modelType.findOneAndUpdate({ originalID, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
-                return await this.create({ ...newObject, modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
+  async  update(data: any, dataToUpdate: object): Promise<D> {
+    const { id, authId } = data;
+    console.log(data);
+    const currentData = await this.modelType.findOne({ originalId: id, deletedAt: undefined }).lean();
+    const newUpdatedData = Object.assign(currentData, dataToUpdate);
+    const update = { updatedBy: authId, updatedAt: new Date() };
+    delete newUpdatedData._id;
+    await this.delete({ id, authId });
+    console.log(newUpdatedData,update);
+    return await this.modelType.create({ ...newUpdatedData, ...update });
 
-            }
 
-            else {
-                const prevData = await this.modelType.findOne({ _id, deletedAt: undefined }).lean();
-                if (!prevData) {
-                    throw { error: 'ID is Invalid' };
+  }
+  async list(query: any = {}, options: any = {}) {
+    const { sortBy } = options;
+    query.deletedAt = undefined;
+    delete options.sortBy;
+    options = { ...options, sort: sortBy };
+    return await this.modelType.find(query, undefined, options).collation({locale: 'en'});
 
-                }
-                const newObject = Object.assign(prevData, dataToUpdate);
-                let valueOriginalID = newObject.originalID;
-                if (valueOriginalID === undefined) {
-                    valueOriginalID = prevData._id;
-                }
-                delete newObject._id;
-                await this.modelType.findOneAndUpdate({ _id, deletedAt: undefined }, { deletedAt: new Date(), deletedBy: valueOriginalID });
-                return await this.create({ ...newObject, modifiedAt: new Date(), modifiedBy: valueOriginalID, originalID: valueOriginalID });
-
-            }
-        }
-        catch (error) {
-            throw { error: 'Invalid is Id' };
-        }
-
-    }
-    async get(skip, limit, sortBy, search): Promise<D[]> {
-        try {
-            if (!Object.keys(search).length) {
-                return await this.modelType.find({ deletedBy: undefined }, (error) => {
-                    if (error) {
-                        throw error;
-                    }
-                }).sort(String(sortBy)).skip(Number(skip)).limit(Number(limit));
-            }
-            else {
-                const newSearch = JSON.stringify(search);
-                const newSearch1 = JSON.parse(newSearch);
-                return await this.modelType.find({ ...newSearch1, deletedBy: undefined }, (error) => {
-                    if (error) {
-                        throw error;
-                    }
-                }).sort(String(sortBy)).skip(Number(skip)).limit(Number(limit));
-            }
-        }
-        catch (error) {
-            throw error;
-        }
-    }
+  }
 }
 
 export default VersionRepository;

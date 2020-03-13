@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
-import * as queryString from 'query-string';
-import UserRepository from './../../repositories/users/UserRepository';
+import UserRepository from './../../repositories/user/UserRepository';
 import SystemResponse from './../../libs/SystemResponse';
 import * as bcrypt from 'bcrypt';
+import IRequest from './../../libs/routes/IRequest';
+import * as  queryString from 'query-string';
 class TraineeController {
 
   private userRepository = new UserRepository();
@@ -18,76 +19,87 @@ class TraineeController {
 
   }
 
-  get = async (req: Request, res: Response): Promise<void> => {
-    const { skip, limit, sortBy } = req.query;
-    delete req.query.skip;
-    delete req.query.limit;
-    delete req.query.sortBy;
-    const queryParams = req.query.search;
-    const newCHeck = queryString.parse(queryParams);
-    const allData = await this.userRepository.get(skip, limit, sortBy, newCHeck);
-    const countLength = allData.length;
-    res.send(
-      {
-        Count: countLength,
-        allData
-      }
+  list = async (req: Request, res: Response): Promise<void> => {
+    try {
 
-    );
+      const { skip, limit, sortBy, search, ...query } = req.query;
+
+     const stringified = queryString.parse(search);
+     console.log(stringified);
+
+      const data = await this.userRepository.list(query, { skip, limit, sortBy, search });
+      if (!data.length) {
+        throw ({ error: 'No Data To Find' });
+
+      }
+      SystemResponse.success(res, { count: data.length, data }, 'Trainee Data Founded');
+    }
+    catch (error) {
+      SystemResponse.failure(res, error);
+    }
 
   }
-
-  put = async (req: Request, res: Response): Promise<void> => {
+  put = async (req: IRequest, res: Response): Promise<void> => {
     const { id, dataToUpdate } = req.body;
+    const authId = req.user.originalId;
     try {
-      const data = await this.userRepository.update(id, dataToUpdate);
-      SystemResponse.success(res, data, 'Trainee Data Updated');
+        const data = await this.userRepository.update({ id, authId }, dataToUpdate);
+        if (data) {
+            SystemResponse.success(res, data, 'Trainee Data Updated');
+        }
+        else {
+            throw ({ message: 'Not found' });
+
+        }
     }
     catch (error) {
-      SystemResponse.success(res, error, 'Invalid Input');
+        SystemResponse.failure(res, error);
 
     }
-  }
+}
 
-  post = async (req: Request, res: Response): Promise<void> => {
+post = async (req: IRequest, res: Response): Promise<void> => {
     try {
-      const { email, password } = req.body;
-      const emailLowerCase = email.toLowerCase();
-      const checkForPreviousUser = await this.userRepository.findTheData({ email: emailLowerCase, deletedAt: undefined });
-      if (!checkForPreviousUser) {
-        const saltTable = 10;
-        const loginPassword = await bcrypt.hash(password, saltTable);
-        const passwordEncryptUser = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
-        const user = await this.userRepository.create(passwordEncryptUser);
+        const { email, password } = req.body;
+        const emailLowerCase = email.toLowerCase();
+        console.log(email, password);
+        const checkForPreviousUser = await this.userRepository.get({ email: emailLowerCase, deletedAt: undefined });
+        if (!checkForPreviousUser) {
+            const saltTable = 10;
+            const loginPassword = await bcrypt.hash(password, saltTable);
+            const user = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
+            const authId = req.user.originalId;
+            const data = await this.userRepository.create({ user, authId });
 
-        SystemResponse.success(res, user, 'Trainee Created');
-      }
-      else {
-        throw ({ error: 'Email already been used' });
-      }
+            SystemResponse.success(res, data, 'Trainee Created');
+        }
+        else {
+            throw ({ message: 'Email already been used' });
+        }
     }
     catch (error) {
 
-      SystemResponse.success(res, error, 'Email already beene used');
+        SystemResponse.failure(res, error);
     }
-  }
+}
 
-  delete = async (req: Request, res: Response): Promise<void> => {
+delete = async (req: IRequest, res: Response): Promise<void> => {
     try {
-      const { id } = req.params;
-      const user = await this.userRepository.delete(id);
-      console.log(user);
-      if (user) {
-        SystemResponse.success(res, user, 'Trainee Data Deleted');
-      }
-      else {
-        SystemResponse.success(res, { user: 'Not Found' }, 'No data to delete');
-      }
+        const { id } = req.params;
+        const authId = req.user.originalId;
+        const user = await this.userRepository.delete({ id, authId });
+        if (user) {
+            SystemResponse.success(res, user, 'Trainee Data Deleted');
+        }
+        else {
+            throw ({ message: 'Not Found' });
+        }
     }
     catch (error) {
-      throw error;
+        SystemResponse.failure(res, error);
     }
-  }
+}
+
 }
 export default TraineeController.getInstance();
 

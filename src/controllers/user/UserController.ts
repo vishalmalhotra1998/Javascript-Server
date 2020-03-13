@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import UserRepository from '../../repositories/users/UserRepository';
+import UserRepository from '../../repositories/user/UserRepository';
 import SystemResponse from '../../libs/SystemResponse';
 import * as bcrypt from 'bcrypt';
 import IRequest from '../../libs/routes/IRequest';
@@ -22,30 +22,30 @@ class UserController {
     }
 
     me = (req: IRequest, res: Response): void => {
-        SystemResponse.success(res, req.user, 'Trainee Data Retrived');
+        SystemResponse.success(res, req.user, 'Trainee Data Retrieved');
     }
 
     login = async (req: any, res: Response): Promise<void> => {
         const { email, password: loginPassword } = req.body;
         try {
-            const data = await this.userRepository.findTheData({ email });
+            const data = await this.userRepository.get({ email });
             if (!data) {
-                throw ({ error: 'Email is invalid' });
+                throw ({ message: 'Email is invalid' });
             }
             const result = await bcrypt.compare(loginPassword, data.password);
             if (result) {
 
-                const _id = data.id;
+                const _id = data.originalId;
                 const role = data.role;
-                const token = jwt.sign({ email, _id, role }, config.SECRET_KEY, { expiresIn: (60 * 60) / 4 });
+                const token = jwt.sign({ email, _id , role }, config.SECRET_KEY, { expiresIn: (60 * 60) / 4 });
                 SystemResponse.success(res, token, 'Token generated');
             }
             else {
-                throw ({ error: 'Invalid Password' });
+                throw ({ message: 'Invalid Password' });
             }
         }
         catch (error) {
-            SystemResponse.success(res, error, 'Invalid Input');
+            SystemResponse.failure(res, error);
         }
 
 
@@ -53,11 +53,8 @@ class UserController {
     }
     get = async (req: Request, res: Response): Promise<void> => {
         try {
-            const { skip, limit, sortBy } = req.query;
-            delete req.query.skip;
-            delete req.query.limit;
-            delete req.query.sortBy;
-            const user = await this.userRepository.get(skip, limit, sortBy, req.query);
+            const query = req.query;
+            const user = await this.userRepository.list(query);
             if (!user) {
                 throw ({ error: 'No Data To Find' });
 
@@ -65,60 +62,69 @@ class UserController {
             SystemResponse.success(res, user, 'Trainee Data Founded');
         }
         catch (error) {
-            SystemResponse.success(res, error, 'No data to Update');
+            SystemResponse.failure(res, error);
         }
 
     }
 
-    put = async (req: Request, res: Response): Promise<void> => {
+    put = async (req: IRequest, res: Response): Promise<void> => {
         const { id, dataToUpdate } = req.body;
+        const authId = req.user.originalId;
         try {
-            const data = await this.userRepository.update(id, dataToUpdate);
-            SystemResponse.success(res, data, 'Trainee Data Updated');
+            const data = await this.userRepository.update({ id, authId }, dataToUpdate);
+            if (data) {
+                SystemResponse.success(res, data, 'Trainee Data Updated');
+            }
+            else {
+                throw ({ message: 'Not found' });
+
+            }
         }
         catch (error) {
-            SystemResponse.success(res, error, 'Invalid Input');
+            SystemResponse.failure(res, error);
 
         }
     }
 
-    post = async (req: Request, res: Response): Promise<void> => {
+    post = async (req: IRequest, res: Response): Promise<void> => {
         try {
             const { email, password } = req.body;
             const emailLowerCase = email.toLowerCase();
-            const checkForPreviousUser = await this.userRepository.findTheData({ email: emailLowerCase, deletedAt: undefined });
+            console.log(email, password);
+            const checkForPreviousUser = await this.userRepository.get({ email: emailLowerCase, deletedAt: undefined });
             if (!checkForPreviousUser) {
                 const saltTable = 10;
                 const loginPassword = await bcrypt.hash(password, saltTable);
-                const passwordEncryptUser = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
-                const user = await this.userRepository.create(passwordEncryptUser);
+                const user = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
+                const authId = req.user.originalId;
+                const data = await this.userRepository.create({ user, authId });
 
-                SystemResponse.success(res, user, 'Trainee Created');
+                SystemResponse.success(res, data, 'Trainee Created');
             }
             else {
-                throw ({ error: 'Email already been used' });
+                throw ({ message: 'Email already been used' });
             }
         }
         catch (error) {
 
-            SystemResponse.success(res, error, 'Email already beene used');
+            SystemResponse.failure(res, error);
         }
     }
 
-    delete = async (req: Request, res: Response): Promise<void> => {
+    delete = async (req: IRequest, res: Response): Promise<void> => {
         try {
             const { id } = req.params;
-            const user = await this.userRepository.delete(id);
-            console.log('deleted', user);
+            const authId = req.user.originalId;
+            const user = await this.userRepository.delete({ id, authId });
             if (user) {
                 SystemResponse.success(res, user, 'Trainee Data Deleted');
             }
             else {
-                SystemResponse.success(res, { user: 'Not Found' }, 'No data to delete');
+                throw ({ message: 'Not Found' });
             }
         }
         catch (error) {
-            throw error;
+            SystemResponse.failure(res, error);
         }
     }
 

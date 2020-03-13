@@ -1,6 +1,6 @@
 import * as swaggerJsdoc from 'swagger-jsdoc';
 const options = {
-  apis: ['dist/controller/**/*.js', './dist/controllers/trainee/Swagger.js', './dist/controllers/trainee/routes.js', './dist/controllers/user/routes.js'],
+  apis: ['dist/controller/**/routes.js', './dist/controllers/trainee/Swagger.js', './dist/controllers/trainee/routes.js', './dist/controllers/user/routes.js'],
   swaggerDefinition: {
     basePath: '/api',
     info: {
