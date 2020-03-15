@@ -20,19 +20,38 @@ class TraineeController {
   }
 
   list = async (req: Request, res: Response): Promise<void> => {
-    try {
+    const { skip, limit, sortBy, search, ...query } = req.query;
 
-      const { skip, limit, sortBy, search, ...query } = req.query;
-      const data = await this.userRepository.list(query, { skip, limit, sortBy, search });
-      if (!data.length) {
-        throw ({ error: 'No Data To Find' });
-
-      }
-      SystemResponse.success(res, { count: data.length, data }, 'Trainee Data Founded');
+    const queryStringObj=queryString.parse(search);
+    const jsonStringifyObj = JSON.stringify(queryStringObj);
+    const searchObject=JSON.parse(jsonStringifyObj);
+    const keysOfSearchObject= Object.keys(searchObject);
+    let searchData={};
+    if(keysOfSearchObject.length)
+    {
+    keysOfSearchObject.map((key)=>{
+    searchData[key]={$regex: `^${searchObject[key]}`,$options: 'i'}
+    });
+    await searchData;
+    const data= await this.userRepository.list(searchData,{skip,limit,sortBy});
+    if (!data) {
+    throw ({ message: 'No Data To Find' });
+    }
+    SystemResponse.success(res, { count: data.length ,data }, 'Trainee Data Founded');
+    }
+    else{
+    const data = await this.userRepository.list(query, { skip, limit, sortBy });
+    if (!data.length) {
+    throw ({ message: 'No Data To Find' });
+    
+    }
+    SystemResponse.success(res, { count: data.length, data }, 'Trainee Data Founded');
+    }
     }
     catch (error) {
-      SystemResponse.failure(res, error);
+    SystemResponse.failure(res, error);
     }
+    
 
   }
   put = async (req: IRequest, res: Response): Promise<void> => {

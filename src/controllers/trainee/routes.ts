@@ -255,7 +255,7 @@ routeHandler.get('/', authMiddleware('getUsers', 'read'), validationChecker(vali
  *
  *
  */
-routeHandler.post('/', authMiddleware('getUsers', 'read'), validationChecker(validation.create), traineeController.post);
+routeHandler.post('/', authMiddleware('getUsers', 'write'), validationChecker(validation.create), traineeController.post);
 /**
  * @swagger
  * /trainee:
@@ -392,7 +392,7 @@ routeHandler.post('/', authMiddleware('getUsers', 'read'), validationChecker(val
  *
  *
  */
-routeHandler.put('/', authMiddleware('getUsers', 'read'), validationChecker(validation.update), traineeController.put);
+routeHandler.put('/', authMiddleware('getUsers', 'write'), validationChecker(validation.update), traineeController.put);
 /**
  * @swagger
  *  /trainee/{id}:
