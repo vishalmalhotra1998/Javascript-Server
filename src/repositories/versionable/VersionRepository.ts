@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as queryString from 'query-string';
 
+
 class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>> {
   private modelType: M;
   constructor(modelType) {
@@ -38,13 +39,14 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
 
   async  update(data: any, dataToUpdate: object): Promise<D> {
     const { id, authId } = data;
+    console.log(data);
     const currentData = await this.modelType.findOne({ originalId: id, deletedAt: undefined }).lean();
     const newUpdatedData = Object.assign(currentData, dataToUpdate);
-    const valueOfOriginalID = newUpdatedData.originalId;
-    const update = { updatedBy: authId, originalId: valueOfOriginalID, updatedAt: new Date() };
+    const update = { updatedBy: authId, updatedAt: new Date() };
     delete newUpdatedData._id;
     await this.delete({ id, authId });
-    return await this.modelType.create({ ...newUpdatedData, update });
+    console.log(newUpdatedData, update);
+    return await this.modelType.create({ ...newUpdatedData, ...update });
 
 
   }
@@ -53,7 +55,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     query.deletedAt = undefined;
     delete options.sortBy;
     options = { ...options, sort: sortBy };
-    return await this.modelType.find(query, undefined, options);
+    return await this.modelType.find(query, undefined, options).collation({locale: 'en'});
 
   }
 }

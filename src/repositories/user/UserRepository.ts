@@ -32,7 +32,7 @@ class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserM
     return super.update(data, dataToUpdate);
   }
 
-  get = (query) => {
+  get = (query: object) => {
     return super.get(query);
   }
 }
