@@ -43,7 +43,7 @@ routeHandler.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOptions));
  *         required: false
  *     responses:
  *             '200':
- *              description: 'Trainee Data Retrieved'
+ *              description: 'Trainee Data Founded'
  *              schema:
  *                type: object
  *                examples:
@@ -53,7 +53,7 @@ routeHandler.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOptions));
  *                     example: ok
  *                   message:
  *                    type: string
- *                    example: Trainee Data Retrieved
+ *                    example: Trainee Data Founded
  *                   Count:
  *                     type: number
  *                     example: 3

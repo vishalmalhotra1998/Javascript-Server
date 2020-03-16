@@ -45,7 +45,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     const update = { updatedBy: authId, updatedAt: new Date() };
     delete newUpdatedData._id;
     await this.delete({ id, authId });
-    console.log(newUpdatedData,update);
+    console.log(newUpdatedData, update);
     return await this.modelType.create({ ...newUpdatedData, ...update });
 
 
