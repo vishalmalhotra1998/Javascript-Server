@@ -51,8 +51,6 @@ class Server {
             res.send('I am OK');
 
         });
-        //    app.use(validationHandler);
-        // Creating route for api
         app.use('/api', mainRoute);
         app.use(notFoundRoute);
         app.use(errorHandler);
