@@ -1,4 +1,5 @@
 // Function  for implementing equilateral triangle
+
 const equilateral = (row: number) => {
   for (let i = 0; i < row; i++) {
     let space = '';
@@ -14,23 +15,25 @@ const equilateral = (row: number) => {
 };
 
 // Creating regex for input constraints
+
 const regex = /^([2-9]|1[0])$/;
+
 // Using try catch for throwing errors
+
 const validEquilateralRows = (rows: number): void => {
   try {
     // Regex for checking valid inputs
-    const rowString = rows.toString();
-    if (regex.test(rowString)) {
 
-      equilateral(rows);
-    }
-    else {
+    const rowString = rows.toString();
+    if (!regex.test(rowString)) {
       throw Error('Invalid Input');
     }
-  }
-  catch (Error) {
-    console.log(Error.message);
+    equilateral(rows);
+  } catch (error) {
+    console.log(error.message);
   }
 };
+
 // Export the function validEquilateralRows
+
 export default validEquilateralRows;
