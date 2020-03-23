@@ -48,7 +48,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     return await this.modelType.create({ ...newUpdatedData, ...update });
  }
 
-  async list(query: any = {}, options: any = {}) {
+  async list(query: any = {}, options: any = {}): Promise<D[]> {
     const { sortBy } = options;
     query.deletedAt = undefined;
     delete options.sortBy;

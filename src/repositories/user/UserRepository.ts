@@ -16,23 +16,23 @@ class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserM
     return super.create(data);
   }
 
-  count = () => {
+  count = (): Promise<void> => {
     return super.count();
   }
 
-  list = (query: any = {}, options: any = {}) => {
+  list = (query: any = {}, options: any = {}): Promise<IUserModel[]> => {
     return super.list(query, options);
   }
 
-  delete = (data: any) => {
+  delete = (data: any): Promise<IUserModel> => {
     return super.delete(data);
   }
 
-  update = (data: object, dataToUpdate: object) => {
+  update = (data: object, dataToUpdate: object): Promise<IUserModel> => {
     return super.update(data, dataToUpdate);
   }
 
-  get = (query: object) => {
+  get = (query: object): Promise<IUserModel> => {
     return super.get(query);
   }
 }
