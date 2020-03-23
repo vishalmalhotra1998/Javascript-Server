@@ -40,7 +40,7 @@ const diamond = (row: number): void => {
     star = '';
   }
 };
- // Creating regex for input constraints
+// Creating regex for input constraints
 const validDiamondRows = (rows: number): void => {
   const regex = /^([2-9]|1[0])$/;
   // Using try catch for throwing errors

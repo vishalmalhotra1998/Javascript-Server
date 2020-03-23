@@ -12,27 +12,27 @@ class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserM
   static generateObjectId() {
     return String(mongoose.Types.ObjectId());
   }
-  create = (data: any): Promise<IUserModel> => {
-    return super.create(data);
+  create = (data: any, authId= {}): Promise<IUserModel> => {
+    return super.create(data, authId);
   }
 
-  count = () => {
+  count = (): Promise<number> => {
     return super.count();
   }
 
-  list = (query: any = {}, options: any = {}) => {
+  list = (query: any = {}, options: any = {}): Promise<IUserModel[]> => {
     return super.list(query, options);
   }
 
-  delete = (data: any) => {
+  delete = (data: any): Promise<IUserModel> => {
     return super.delete(data);
   }
 
-  update = (data: object, dataToUpdate: object) => {
+  update = (data: object, dataToUpdate: object): Promise<IUserModel> => {
     return super.update(data, dataToUpdate);
   }
 
-  get = (query: object) => {
+  get = (query: object): Promise<IUserModel> => {
     return super.get(query);
   }
 }
