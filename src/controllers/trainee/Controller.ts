@@ -27,7 +27,7 @@ class TraineeController {
     const keysOfSearchObject = Object.keys(searchObject);
     try {
       if (keysOfSearchObject.length) {
-         const searchedObj = await searching(keysOfSearchObject, searchObject, {skip, limit, sortBy});
+         const searchedObj = searching(keysOfSearchObject, searchObject, {skip, limit, sortBy});
          const data = await this.userRepository.list(searchedObj, { skip, limit, sortBy });
          if (!data.length) {
           throw ({ message: 'No Data To Find' });
