@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import IRequest from './../../libs/routes/IRequest';
 import { searching } from './helper';
 import * as  queryString from 'query-string';
+
 class TraineeController {
 
   private userRepository = new UserRepository();
@@ -54,13 +55,10 @@ class TraineeController {
     const authId = req.user.originalId;
     try {
       const data = await this.userRepository.update({ id, authId }, dataToUpdate);
-      if (data) {
-        SystemResponse.success(res, data, 'Trainee Data Updated');
-      }
-      else {
+      if (!data) {
         throw ({ message: 'Not found' });
-
       }
+      SystemResponse.success(res, data, 'Trainee Data Updated');
     }
     catch (error) {
       SystemResponse.failure(res, error);
@@ -73,18 +71,15 @@ class TraineeController {
       const { email, password } = req.body;
       const emailLowerCase = email.toLowerCase();
       const checkForPreviousUser = await this.userRepository.get({ email: emailLowerCase, deletedAt: undefined });
-      if (!checkForPreviousUser) {
-        const saltTable = 10;
-        const loginPassword = await bcrypt.hash(password, saltTable);
-        const user = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
-        const authId = req.user.originalId;
-        const data = await this.userRepository.create({ user, authId });
-
-        SystemResponse.success(res, data, 'Trainee Created');
-      }
-      else {
+      if (checkForPreviousUser) {
         throw ({ message: 'Email already been used' });
       }
+      const saltTable = 10;
+      const loginPassword = await bcrypt.hash(password, saltTable);
+      const user = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
+      const authId = req.user.originalId;
+      const data = await this.userRepository.create({ user, authId });
+      SystemResponse.success(res, data, 'Trainee Created');
     }
     catch (error) {
 
@@ -97,12 +92,10 @@ class TraineeController {
       const { id } = req.params;
       const authId = req.user.originalId;
       const user = await this.userRepository.delete({ id, authId });
-      if (user) {
-        SystemResponse.success(res, user, 'Trainee Data Deleted');
-      }
-      else {
+      if (!user) {
         throw ({ message: 'Not Found' });
       }
+      SystemResponse.success(res, user, 'Trainee Data Deleted');
     }
     catch (error) {
       SystemResponse.failure(res, error);
