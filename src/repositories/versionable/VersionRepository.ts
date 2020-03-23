@@ -10,11 +10,10 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     return String(mongoose.Types.ObjectId());
   }
 
-  async create(options): Promise<D> {
+  async create(options, authId= {}): Promise<D> {
     const id = VersionRepository.generateObjectId();
-    const { user, authId } = options;
     return await this.modelType.create({
-      ...user,
+      ...options,
       _id: id,
       createdBy: authId,
       originalId: id

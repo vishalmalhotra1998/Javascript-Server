@@ -78,7 +78,7 @@ class TraineeController {
       const loginPassword = await bcrypt.hash(password, saltTable);
       const user = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
       const authId = req.user.originalId;
-      const data = await this.userRepository.create({ user, authId });
+      const data = await this.userRepository.create( user, authId );
       SystemResponse.success(res, data, 'Trainee Created');
     }
     catch (error) {

@@ -28,7 +28,7 @@ export default async () => {
 
   if (!count) {
     const authId = '5e577abc417c5b3a22164a8c';
-    return userRepository.create({ user, authId }).then((result) => {
+    return userRepository.create( user, authId ).then((result) => {
       console.log('User Added Successfully', result);
     });
   }

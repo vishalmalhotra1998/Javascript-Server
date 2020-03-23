@@ -12,11 +12,11 @@ class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserM
   static generateObjectId() {
     return String(mongoose.Types.ObjectId());
   }
-  create = (data: any): Promise<IUserModel> => {
-    return super.create(data);
+  create = (data: any, authId= {}): Promise<IUserModel> => {
+    return super.create(data, authId);
   }
 
-  count = (): Promise<void> => {
+  count = (): Promise<number> => {
     return super.count();
   }
 
