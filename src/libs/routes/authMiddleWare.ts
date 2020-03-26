@@ -12,7 +12,7 @@ export default  (module, permissionType) => async (req: IRequest, res: Response,
   const token: string = req.headers.authorization;
   const { SECRET_KEY: secretKey } = config;
   const decodeUser = jwt.verify(token, secretKey);
-  const userRepository = new UserRepository();
+  const userRepository: UserRepository = new UserRepository();
   if (!decodeUser) {
     next({
       status: 403,
