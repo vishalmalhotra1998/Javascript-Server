@@ -17,5 +17,3 @@ export default class UserSchema extends VersionSchema {
 
     }
 }
-
-

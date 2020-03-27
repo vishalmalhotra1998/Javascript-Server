@@ -5,34 +5,33 @@ import VersionRepository from '../versionable/VersionRepository';
 
 class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserModel>> {
 
-  private userModel: mongoose.Model<IUserModel>;
   constructor() {
     super(userModel);
   }
   static generateObjectId() {
     return String(mongoose.Types.ObjectId());
   }
-  create = (data: any, authId= {}): Promise<IUserModel> => {
+  async create (data: any, authId= {}): Promise<IUserModel> {
     return super.create(data, authId);
   }
 
-  count = (): Promise<number> => {
+  async count(): Promise<number> {
     return super.count();
   }
 
-  list = (query: any = {}, options: any = {}): Promise<IUserModel[]> => {
+  async list (query: any = {}, options: any = {}): Promise<IUserModel[]> {
     return super.list(query, options);
   }
 
-  delete = (data: any): Promise<IUserModel> => {
+  async delete (data: any): Promise<IUserModel> {
     return super.delete(data);
   }
 
-  update = (data: object, dataToUpdate: object): Promise<IUserModel> => {
+  async update (data: object, dataToUpdate: object): Promise<IUserModel> {
     return super.update(data, dataToUpdate);
   }
 
-  get = (query: object): Promise<IUserModel> => {
+  async get (query: object): Promise<IUserModel> {
     return super.get(query);
   }
 }

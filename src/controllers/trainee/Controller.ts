@@ -8,7 +8,7 @@ import * as  queryString from 'query-string';
 
 class TraineeController {
 
-  private userRepository = new UserRepository();
+  private userRepository: UserRepository = new UserRepository();
   static instance;
 
   static getInstance = (): TraineeController => {
@@ -52,7 +52,7 @@ class TraineeController {
 
   put = async (req: IRequest, res: Response): Promise<void> => {
     const { id, dataToUpdate } = req.body;
-    const authId = req.user.originalId;
+    const { originalId: authId } = req.user;
     try {
       const data = await this.userRepository.update({ id, authId }, dataToUpdate);
       if (!data) {
@@ -77,7 +77,7 @@ class TraineeController {
       const saltTable = 10;
       const loginPassword = await bcrypt.hash(password, saltTable);
       const user = Object.assign(req.body, { password: loginPassword, email: emailLowerCase });
-      const authId = req.user.originalId;
+      const { originalId: authId } = req.user;
       const data = await this.userRepository.create( user, authId );
       SystemResponse.success(res, data, 'Trainee Created');
     }
@@ -90,7 +90,7 @@ class TraineeController {
   delete = async (req: IRequest, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
-      const authId = req.user.originalId;
+      const { originalId: authId } = req.user;
       const user = await this.userRepository.delete({ id, authId });
       if (!user) {
         throw ({ message: 'Not Found' });

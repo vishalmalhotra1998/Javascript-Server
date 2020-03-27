@@ -10,7 +10,7 @@ import config from './../../config/configuration';
 class UserController {
 
     static instance;
-    userRepository = new UserRepository();
+    private userRepository: UserRepository = new UserRepository();
     static getInstance = (): UserController => {
 
         if (!UserController.instance) {

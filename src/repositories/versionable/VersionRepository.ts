@@ -12,7 +12,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
 
   async create(options, authId= {}): Promise<D> {
     const id = VersionRepository.generateObjectId();
-    return await this.modelType.create({
+    return this.modelType.create({
       ...options,
       _id: id,
       createdBy: authId,
@@ -23,17 +23,20 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
   }
 
   async count() {
-    return await this.modelType.countDocuments();
+    return this.modelType.countDocuments();
   }
 
-  async get(data: object): Promise<D> {
-    return await this.modelType.findOne({ ...data, deletedBy: undefined }).lean();
+  async get(data: any): Promise<D> {
+    const originalId = data.id;
+    delete data.id;
+    data = { ...data, originalId };
+    return this.modelType.findOne({ ...data, deletedBy: undefined }).lean();
   }
 
   async delete(data: any): Promise<D> {
     const { id, authId } = data;
     const update = { deletedAt: new Date(), deletedBy: authId };
-    return await this.modelType.findOneAndUpdate({ originalId: id, deletedAt: undefined }, update, { new: true });
+    return this.modelType.findOneAndUpdate({ originalId: id, deletedAt: undefined }, update, { new: true });
 
   }
 
@@ -44,7 +47,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     const update = { updatedBy: authId, updatedAt: new Date() };
     delete newUpdatedData._id;
     await this.delete({ id, authId });
-    return await this.modelType.create({ ...newUpdatedData, ...update });
+    return this.modelType.create({ ...newUpdatedData, ...update });
  }
 
   async list(query: any = {}, options: any = {}): Promise<D[]> {
@@ -52,9 +55,10 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     query.deletedAt = undefined;
     delete options.sortBy;
     options = { ...options, sort: sortBy };
-    return await this.modelType.find(query, undefined, options).collation({locale: 'en'});
+    return this.modelType.find(query, undefined, options).collation({locale: 'en'});
 
   }
 }
 
 export default VersionRepository;
+
