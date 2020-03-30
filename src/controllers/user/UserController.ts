@@ -3,7 +3,7 @@ import UserRepository from '../../repositories/user/UserRepository';
 import SystemResponse from '../../libs/SystemResponse';
 import * as bcrypt from 'bcrypt';
 import IRequest from '../../libs/routes/IRequest';
-import * as jwt from 'jsonwebtoken';
+import { Token } from './helper';
 import config from './../../config/configuration';
 
 
@@ -36,9 +36,7 @@ class UserController {
             if (!result) {
               throw ({ message: 'Invalid Password' });
             }
-            const _id = data.originalId;
-            const role = data.role;
-            const token = jwt.sign({ email, _id , role }, config.SECRET_KEY, { expiresIn: (60 * 60) / 4 });
+            const token = Token(data, email, config);
             SystemResponse.success(res, token, 'Token generated');
         }
         catch (error) {

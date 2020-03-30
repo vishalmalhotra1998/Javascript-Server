@@ -1,6 +1,6 @@
-export const searching = (keysOfSearchObject, searchObject, options) => {
+export const searching = (searchObject) => {
   const searchData = {};
-  keysOfSearchObject.map((key) => {
+  Object.keys(searchObject).map((key) => {
     searchData[key] = { $regex: `^${searchObject[key]}`, $options: 'i' };
   });
 

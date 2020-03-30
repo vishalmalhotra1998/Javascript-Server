@@ -1,5 +1,5 @@
 
-interface Ipermissions {
+interface Ipermission {
     all: string[];
     read: string[];
     write: string[];
@@ -14,6 +14,7 @@ interface Iemail {
 }
 
 interface IpermissionSet {
-    getUsers: Ipermissions;
+    getUsers: Ipermission;
 }
 export { Iemail, IpermissionSet };
+

@@ -6,7 +6,7 @@ export default (config) => {
       if (configKey.string && typeof (reqLocationKey) !== 'string') {
         arr.push(`${key} should be String`);
       }
-      else if (configKey.number) {
+      if (configKey.number) {
 
         if (!reqLocationKey && configKey.hasOwnProperty('default')) {
           req[location][key] = configKey.default;
@@ -14,17 +14,17 @@ export default (config) => {
         if (isNaN(reqLocationKey)) {
           arr.push(`${configKey.errorMessage}`);
         }
-        else {
+        if (!isNaN(reqLocationKey)) {
           req[location][key] = Number(req[location][key]);
         }
       }
-      else if (configKey.isObject && typeof reqLocationKey !== 'object') {// If Key contains isObject and Checks the Object is retrived from Location
+      if (configKey.isObject && typeof reqLocationKey !== 'object') {// If Key contains isObject and Checks the Object is retrived from Location
         arr.push(`${key} is required of type object`);
       }
-      else if (configKey.isObject && Array.isArray(reqLocationKey)) {
+      if (configKey.isObject && Array.isArray(reqLocationKey)) {
         arr.push(`${key} should not be in type Array`);
       }
-      else if (configKey.isArray && !Array.isArray(reqLocationKey)) {
+      if (configKey.isArray && !Array.isArray(reqLocationKey)) {
         arr.push(`${key} should be in type Array`);
       }
       // If key contains regex module
@@ -37,9 +37,7 @@ export default (config) => {
             arr.push(`Invalid ${key}`);
           }
         }
-        else {
           arr.push(`${configKey.errorMessage}`);
-        }
       }
       // If key Contains Custom function
       if (configKey.custom) {
@@ -62,7 +60,7 @@ export default (config) => {
             if (req[location].hasOwnProperty(key)) {// if property exist
               checkForOtherValues(config[key], req[location][key], key, location);
             }
-            else if (config[key].hasOwnProperty('default')) {
+            if (config[key].hasOwnProperty('default')) {
               req[location][key] = config[key].default;
             }
           }
