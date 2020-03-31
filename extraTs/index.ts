@@ -1,0 +1,12 @@
+import { validDiamondRows } from './patterns';
+import { validEquilateralRows } from './patterns';
+import { validUser } from './utils';
+import { hasPermission } from './utils';
+import { user } from './constants';
+validDiamondRows(5);
+console.log('\n');
+validEquilateralRows(7);
+console.log('\n');
+validUser(user);
+console.log('\n');
+console.log(hasPermission('getUsers', 'head-trainer', 'delete'));
