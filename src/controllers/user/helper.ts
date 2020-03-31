@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-export const Token = (data, email, config) => {
+export const createToken = (data, email, config) => {
 
             const _id = data.originalId;
             const role = data.role;
