@@ -3,7 +3,7 @@ import UserRepository from '../../repositories/user/UserRepository';
 import SystemResponse from '../../libs/SystemResponse';
 import * as bcrypt from 'bcrypt';
 import IRequest from '../../libs/routes/IRequest';
-import { Token } from './helper';
+import { createToken } from './helper';
 import config from './../../config/configuration';
 
 
@@ -36,7 +36,7 @@ class UserController {
             if (!result) {
               throw ({ message: 'Invalid Password' });
             }
-            const token = Token(data, email, config);
+            const token = createToken(data, email, config);
             SystemResponse.success(res, token, 'Token generated');
         }
         catch (error) {
