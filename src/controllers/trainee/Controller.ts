@@ -28,7 +28,7 @@ class TraineeController {
     const keysOfSearchObject = Object.keys(searchObject);
     try {
       if (keysOfSearchObject.length) {
-         const searchedObj = searching(keysOfSearchObject, searchObject, {skip, limit, sortBy});
+         const searchedObj = searching(searchObject);
          const data = await this.userRepository.list(searchedObj, { skip, limit, sortBy });
          if (!data.length) {
           throw ({ message: 'No Data To Find' });
@@ -70,7 +70,7 @@ class TraineeController {
     try {
       const { email, password } = req.body;
       const emailLowerCase = email.toLowerCase();
-      const checkForPreviousUser = await this.userRepository.get({ email: emailLowerCase, deletedAt: undefined });
+      const checkForPreviousUser = await this.userRepository.get({ email: emailLowerCase});
       if (checkForPreviousUser) {
         throw ({ message: 'Email already been used' });
       }

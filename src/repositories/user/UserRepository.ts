@@ -23,15 +23,15 @@ class UserRepository extends VersionRepository<IUserModel, mongoose.Model<IUserM
     return super.list(query, options);
   }
 
-  async delete (data: any): Promise<IUserModel> {
+  async delete (data: any = {}): Promise<IUserModel> {
     return super.delete(data);
   }
 
-  async update (data: object, dataToUpdate: object): Promise<IUserModel> {
+  async update (data: object = {}, dataToUpdate: object = {}): Promise<IUserModel> {
     return super.update(data, dataToUpdate);
   }
 
-  async get (query: object): Promise<IUserModel> {
+  async get (query: object = {}): Promise<IUserModel> {
     return super.get(query);
   }
 }
