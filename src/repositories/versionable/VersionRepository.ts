@@ -10,7 +10,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     return String(mongoose.Types.ObjectId());
   }
 
-  async create(options, authId= {}): Promise<D> {
+  async create(options, authId = {}): Promise<D> {
     const id = VersionRepository.generateObjectId();
     return this.modelType.create({
       ...options,
@@ -29,7 +29,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
   async get(data: any): Promise<D> {
     const originalId = data.id;
     delete data.id;
-    data = { ...data, originalId };
+    data = originalId ? { ...data, originalId } : { ...data };
     return this.modelType.findOne({ ...data, deletedBy: undefined }).lean();
   }
 
@@ -48,14 +48,14 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     delete newUpdatedData._id;
     await this.delete({ id, authId });
     return this.modelType.create({ ...newUpdatedData, ...update });
- }
+  }
 
   async list(query: any = {}, options: any = {}): Promise<D[]> {
     const { sortBy } = options;
     query.deletedAt = undefined;
     delete options.sortBy;
     options = { ...options, sort: sortBy };
-    return this.modelType.find(query, undefined, options).collation({locale: 'en'});
+    return this.modelType.find(query, undefined, options).collation({ locale: 'en' });
 
   }
 }
