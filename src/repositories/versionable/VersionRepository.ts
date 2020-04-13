@@ -27,9 +27,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
   }
 
   async get(data: any): Promise<D> {
-    const originalId = data.id;
-    delete data.id;
-    data = originalId ? { ...data, originalId } : { ...data };
+    console.log('version Repo', data);
     return this.modelType.findOne({ ...data, deletedBy: undefined }).lean();
   }
 
