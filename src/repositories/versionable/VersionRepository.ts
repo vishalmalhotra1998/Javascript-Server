@@ -10,7 +10,7 @@ class VersionRepository<D extends mongoose.Document, M extends mongoose.Model<D>
     return String(mongoose.Types.ObjectId());
   }
 
-  async create(options, authId = {}): Promise<D> {
+  async create(options: any, authId: any = {}): Promise<D> {
     const id = VersionRepository.generateObjectId();
     return this.modelType.create({
       ...options,
