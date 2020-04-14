@@ -25,7 +25,7 @@ class UserController {
         SystemResponse.success(res, req.user, 'Trainee Data Retrieved');
     }
 
-    login = async (req: any, res: Response): Promise<void> => {
+    login = async (req: Request, res: Response): Promise<void> => {
         const { email, password: loginPassword } = req.body;
         try {
             const data = await this.userRepository.get({ email });
